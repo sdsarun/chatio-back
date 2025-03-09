@@ -37,11 +37,12 @@ async function bootstrap() {
     );
   }
 
-  await app.listen(configurationService.appConfig.port, () =>
-    logger.log(
-      `Application running on port ${configurationService.appConfig.port}`,
-    ),
-  );
+  const listenCallback = async () => {
+    const url: string = await app.getUrl();
+    logger.log(`Application running on ${url}`);
+  }
+
+  await app.listen(configurationService.appConfig.port, () => void listenCallback());
 }
 
 bootstrap();

@@ -13,9 +13,10 @@ import { LoggerInterceptor } from './common/interceptors/logger.interceptor';
 import { FormatResponseInterceptor } from './common/interceptors/format-response.interceptor';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ApplyRequestIdMiddleware } from './common/middlewares/apply-request-id.middleware';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [ConfigurationModule, LoggerModule],
+  imports: [ConfigurationModule, LoggerModule, DatabaseModule],
   controllers: [AppController],
   providers: [
     AppService,

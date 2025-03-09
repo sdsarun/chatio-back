@@ -1,0 +1,11 @@
+services:
+  chaio-back:
+    container_name: chaio-back-dev
+    build:
+      context: ../../
+      dockerfile: docker/development/Dockerfile
+    ports:
+      - "3301:3301"
+    restart: "always"
+    env_file:
+      - ../../.env

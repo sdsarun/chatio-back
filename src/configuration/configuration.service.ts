@@ -13,6 +13,8 @@ import {
   Environment,
   EnvironmentVariables,
 } from '../shared/constants/env.constant';
+import { SequelizeModuleOptions } from '@nestjs/sequelize';
+import DB_MODELS from '../database/models';
 
 @Injectable()
 export class ConfigurationService {
@@ -81,7 +83,29 @@ export class ConfigurationService {
     };
   }
 
-  get databaseConfig() {
-    return {}
+  get databaseConfig(): SequelizeModuleOptions {
+    return {
+      dialect: this.config.get("DB_DIALECT"),
+      host: this.config.get("DB_HOST"),
+      port: this.config.get("DB_PORT"),
+      username: this.config.get("DB_USERNAME"),
+      password: this.config.get("DB_PASSWORD"),
+      database: this.config.get("DB_DATABASE"),
+      schema: this.config.get("DB_SCHEMA"),
+      models: DB_MODELS,
+      autoLoadModels: true,
+      synchronize: false,
+      define: {
+        freezeTableName: true,
+        timestamps: true,
+        paranoid: true,
+        updatedAt: 'updated_at',
+        createdAt: 'created_at',
+        deletedAt: 'deleted_at',
+      },
+      dialectOptions: {
+        ssl: this.config.get('DB_SSL') === 'true',
+      }
+    }
   }
 }

@@ -1,4 +1,5 @@
-import { IsEnum, IsNumber, Max, Min } from 'class-validator';
+import { IsEnum, IsNumber, IsString, Max, Min } from 'class-validator';
+import { IsTrueOrFalseString } from '../../common/validators/is-true-or-false-string.validator';
 
 export enum Environment {
   Development = 'development',
@@ -14,4 +15,30 @@ export class EnvironmentVariables {
   @Min(0)
   @Max(65535)
   PORT: number;
+
+  @IsString()
+  DB_DIALECT: string;
+
+  @IsString()
+  DB_HOST: string;
+
+  @IsNumber()
+  @Min(0)
+  @Max(65535)
+  DB_PORT: number;
+
+  @IsString()
+  DB_USERNAME: string;
+
+  @IsString()
+  DB_PASSWORD: string;
+
+  @IsString()
+  DB_DATABASE: string;
+
+  @IsString()
+  DB_SCHEMA: string;
+
+  @IsTrueOrFalseString()
+  DB_SSL: string;
 }
