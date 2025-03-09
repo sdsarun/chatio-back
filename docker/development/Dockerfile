@@ -29,4 +29,5 @@ COPY --from=builder /usr/src/app/dist ./dist
 # Expose the application port
 EXPOSE 3301
 
+# Run the application
 CMD ["node", "dist/main"]
