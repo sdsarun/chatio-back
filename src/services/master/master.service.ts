@@ -14,6 +14,12 @@ export class MasterService {
     private readonly ConversationType: typeof MasterConversationType,
   ) {}
 
+  async findUserRoleById(payload: { id: string }) {
+    return this.userRole.findByPk(payload.id, {
+      raw: true,
+    });
+  }
+
   async findUserRoleByName(payload: { name: UserRole }) {
     return this.userRole.findOne({
       where: {
