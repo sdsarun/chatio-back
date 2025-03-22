@@ -6,9 +6,8 @@ module.exports = {
     await queryInterface.sequelize.query(`
       INSERT INTO master_user_types ("name")
       VALUES 
-        ('SUPER_ADMIN_USER'),
-        ('REGISTERED_USER'),
-        ('GUEST_USER')
+        ('REGISTERED'),
+        ('GUEST')
       ON CONFLICT ("name") DO NOTHING;
     `);
   },
@@ -16,7 +15,7 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     await queryInterface.sequelize.query(`
       DELETE FROM master_user_types
-      WHERE "name" IN ('SUPER_ADMIN_USER', 'REGISTERED_USER', 'GUEST_USER');
+      WHERE "name" IN ('REGISTERED', 'GUEST');
     `);
   },
 };
