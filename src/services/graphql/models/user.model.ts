@@ -1,0 +1,16 @@
+import { Field, ID, ObjectType  } from '@nestjs/graphql';
+import { UserRole } from './user-role.model';
+
+@ObjectType()
+export class User {
+  @Field(() => ID)
+  id: string;
+  username: string;
+  aka: string;
+  userRoleId?: string;
+  isActive?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+  userRole?: UserRole;
+}
