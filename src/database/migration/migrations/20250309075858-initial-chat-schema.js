@@ -91,7 +91,7 @@ module.exports = {
           id uuid PRIMARY KEY default gen_random_uuid(),
           user_id uuid,
           blocked_user_id uuid,
-          blocked_at timestamptz,
+          blocked_at timestamptz DEFAULT NOW(),
           FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
           FOREIGN KEY (blocked_user_id) REFERENCES users(id) ON DELETE SET NULL
         );

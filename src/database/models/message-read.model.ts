@@ -5,7 +5,7 @@ import {
   ForeignKey,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from 'sequelize-typescript';
 import { Message } from './message.model';
 import { User } from './user.model';

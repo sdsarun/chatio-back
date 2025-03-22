@@ -9,14 +9,20 @@ import {
   Model,
   Table,
   Unique,
-  UpdatedAt
+  UpdatedAt,
 } from 'sequelize-typescript';
-import { MasterUserType } from './master-user-type.model';
+import { MasterUserRole } from './master-user-role.model';
 
 export type UserCreation = Partial<
   Pick<
     User,
-    'id' | 'username' | 'userTypeId' | 'createdAt' | 'updatedAt' | 'deletedAt'
+    | 'id'
+    | 'username'
+    | 'aka'
+    | 'userRoleId'
+    | 'createdAt'
+    | 'updatedAt'
+    | 'deletedAt'
   >
 >;
 
@@ -34,13 +40,18 @@ export class User extends Model<User, UserCreation> {
   @Column(DataType.STRING(128))
   username!: string;
 
-  @ForeignKey(() => MasterUserType)
+  @AllowNull(false)
+  @Unique
+  @Column(DataType.STRING(64))
+  aka!: string;
+
+  @ForeignKey(() => MasterUserRole)
   @Column({
-    field: 'user_type_id',
+    field: 'user_role_id',
     type: DataType.UUID,
     onDelete: 'SET NULL',
   })
-  userTypeId!: string;
+  userRoleId!: string;
 
   @Column({ field: 'is_active', type: DataType.BOOLEAN, defaultValue: true })
   isActive!: boolean;
@@ -63,6 +74,6 @@ export class User extends Model<User, UserCreation> {
   @Column({ field: 'deleted_at', type: DataType.DATE })
   deletedAt!: Date | null;
 
-  @BelongsTo(() => MasterUserType)
-  userType!: MasterUserType;
+  @BelongsTo(() => MasterUserRole)
+  userRole!: MasterUserRole;
 }
