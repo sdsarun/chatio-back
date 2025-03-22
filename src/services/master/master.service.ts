@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { MasterUserRole } from '../../database/models/master-user-role.model';
 import { MasterConversationType } from '../../database/models/master-conversation-type.model';
+import { UserRole } from './master.constants';
 
 @Injectable()
 export class MasterService {
@@ -13,7 +14,7 @@ export class MasterService {
     private readonly ConversationType: typeof MasterConversationType,
   ) {}
 
-  async findUserRoleByName(payload: { name: string }) {
+  async findUserRoleByName(payload: { name: UserRole }) {
     return this.userRole.findOne({
       where: {
         name: payload.name,
