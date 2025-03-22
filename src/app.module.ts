@@ -14,9 +14,15 @@ import { FormatResponseInterceptor } from './common/interceptors/format-response
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ApplyRequestIdMiddleware } from './common/middlewares/apply-request-id.middleware';
 import { DatabaseModule } from './database/database.module';
+import { GraphQLModule } from './services/graphql/graphql.module';
 
 @Module({
-  imports: [ConfigurationModule, LoggerModule, DatabaseModule],
+  imports: [
+    ConfigurationModule,
+    LoggerModule,
+    DatabaseModule,
+    GraphQLModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

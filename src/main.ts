@@ -12,7 +12,26 @@ async function bootstrap() {
   const logger = app.get(Logger);
   const configurationService = app.get(ConfigurationService);
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      crossOriginEmbedderPolicy: false,
+      contentSecurityPolicy: {
+        directives: {
+          imgSrc: [
+            `'self'`,
+            'data:',
+            'apollo-server-landing-page.cdn.apollographql.com',
+          ],
+          scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
+          manifestSrc: [
+            `'self'`,
+            'apollo-server-landing-page.cdn.apollographql.com',
+          ],
+          frameSrc: [`'self'`, 'sandbox.embed.apollographql.com'],
+        },
+      },
+    }),
+  );
   app.useLogger(logger);
 
   app.enableCors(configurationService.corsConfig);
@@ -40,9 +59,12 @@ async function bootstrap() {
   const listenCallback = async () => {
     const url: string = await app.getUrl();
     logger.log(`Application running on ${url}`);
-  }
+  };
 
-  await app.listen(configurationService.appConfig.port, () => void listenCallback());
+  await app.listen(
+    configurationService.appConfig.port,
+    () => void listenCallback(),
+  );
 }
 
 bootstrap();

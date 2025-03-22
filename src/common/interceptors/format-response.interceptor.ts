@@ -1,5 +1,6 @@
 import {
   CallHandler,
+  ContextType,
   ExecutionContext,
   Injectable,
   NestInterceptor,
@@ -10,8 +11,6 @@ import { SkipFormatResponseInterceptorPropertyName } from '../decorators/skip-fo
 
 @Injectable()
 export class FormatResponseInterceptor implements NestInterceptor {
-  constructor() {}
-
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>,
@@ -21,24 +20,45 @@ export class FormatResponseInterceptor implements NestInterceptor {
       return next.handle();
     }
 
+    const contextType = context.getType<ContextType | 'graphql'>();
+    
+    switch (contextType) {
+      case 'http': {
+        return this.formatHttpResponse(context, next);
+      }
+      case 'graphql': {
+        return this.formatGraphQLResponse(context, next);
+      }
+      default: {
+        return next.handle();
+      }
+    }
+  }
+
+  private formatHttpResponse(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Observable<any> {
     const response = context.switchToHttp().getResponse<Response>();
-
+    
     return next.handle().pipe(
-      map<
-        { message: string },
-        { success: boolean; statusCode: number; message: string; data: any }
-      >((controllerResult) => {
+      map((controllerResult) => {
         const message = controllerResult?.message ?? 'Success';
-
         const formattedResponseObject = {
           success: true,
           statusCode: response.statusCode,
           message,
           data: controllerResult,
         };
-
         return formattedResponseObject;
       }),
     );
+  }
+
+  private formatGraphQLResponse(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Observable<any> {
+    return next.handle();
   }
 }
