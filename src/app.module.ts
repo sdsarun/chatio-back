@@ -15,6 +15,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ApplyRequestIdMiddleware } from './common/middlewares/apply-request-id.middleware';
 import { DatabaseModule } from './database/database.module';
 import { GraphQLModule } from './services/graphql/graphql.module';
+import { MasterModule } from './services/master/master.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { GraphQLModule } from './services/graphql/graphql.module';
     LoggerModule,
     DatabaseModule,
     GraphQLModule,
+    MasterModule,
   ],
   controllers: [AppController],
   providers: [
