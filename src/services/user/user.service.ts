@@ -7,11 +7,13 @@ import { WhereOptions } from 'sequelize';
 import { Op } from 'sequelize';
 import { isDeepEmpty } from '../../shared/utils/validation/common.validation';
 import { CreateUserIfNotExistsInput } from './dto/input/create-user-if-not-exists.input';
+import { MasterService } from '../master/master.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(UserModel) private readonly user: typeof UserModel,
+    private readonly masterService: MasterService,
   ) {}
 
   async getUser(payload: GetUserArgs): Promise<User | null> {
@@ -48,10 +50,16 @@ export class UserService {
   async createUserIfNotExists(
     payload: CreateUserIfNotExistsInput,
   ): Promise<User> {
+    const identifyRole = await this.masterService.findUserRoleByName({ name: payload.role });
+    if (!identifyRole) {
+      throw new Error("Role does not exists.");
+    }
+
     const [userCreated] = await this.user.upsert(
       {
-        ...payload,
+        username: payload.username,
         aka: payload?.aka || payload.username,
+        userRoleId: identifyRole.id,
       },
       { returning: true },
     );
