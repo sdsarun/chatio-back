@@ -4,7 +4,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.sequelize.query(`
-      INSERT INTO master_user_types ("name")
+      INSERT INTO master_user_roles ("name")
       VALUES 
         ('REGISTERED'),
         ('GUEST')
@@ -14,7 +14,7 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.sequelize.query(`
-      DELETE FROM master_user_types
+      DELETE FROM master_user_roles
       WHERE "name" IN ('REGISTERED', 'GUEST');
     `);
   },
