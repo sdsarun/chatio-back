@@ -8,7 +8,6 @@
 
 # Default to development environment if not specified
 ENVIRONMENT=${1:-development}
-BUILD_FLAG=$2
 
 # Define color codes for output
 GREEN='\033[0;32m'
@@ -30,11 +29,9 @@ fi
 # Navigate to the project root directory
 echo -e "${BLUE}Deploying NestJS application to ${ENVIRONMENT} environment...${NC}"
 
-# Check if we need to build the images
-if [ "$BUILD_FLAG" == "--build" ]; then
-  echo -e "${YELLOW}Building Docker images...${NC}"
-  docker compose -f "$DOCKER_DIR/compose.yaml" build
-fi
+# Build the images
+echo -e "${YELLOW}Building Docker images...${NC}"
+docker compose -f "$DOCKER_DIR/compose.yaml" build --no-cache
 
 # Stop any running containers from the previous deployment
 echo -e "${YELLOW}Stopping any existing containers...${NC}"
