@@ -62,6 +62,7 @@ export class UserService {
       },
       { returning: true },
     );
-    return userCreated as User;
+
+    return this.getUser({ userId: userCreated.id }) as Promise<User>;
   }
 }
