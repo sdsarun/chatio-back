@@ -37,6 +37,8 @@ export class UserService {
     const user = await this.user.findOne({
       where,
       raw: true,
+      include: { all: true },
+      nest: true,
     });
 
     return user as User;
@@ -45,9 +47,11 @@ export class UserService {
   async createUserIfNotExists(
     payload: CreateUserIfNotExistsInput,
   ): Promise<User> {
-    const identifyRole = await this.masterService.findUserRoleByName({ name: payload.role });
+    const identifyRole = await this.masterService.findUserRoleByName({
+      name: payload.role,
+    });
     if (!identifyRole) {
-      throw new Error("Role does not exists.");
+      throw new Error('Role does not exists.');
     }
 
     const [userCreated] = await this.user.upsert(
