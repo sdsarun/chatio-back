@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { WhereOptions } from 'sequelize';
 import { User as UserModel } from '../../database/models/user.model';
-import { isDeepEmpty } from '../../shared/utils/validation/common.validation';
+import { ServiceActionOptions } from '../../shared/types/service-action';
+import { validateDTO } from '../../shared/utils/validation/dto.validation';
 import { User } from '../graphql/models/user.model';
 import { MasterService } from '../master/master.service';
 import { GetUserArgs } from './dto/args/get-user.args';
 import { CreateUserIfNotExistsInput } from './dto/input/create-user-if-not-exists.input';
+import { isDeepEmpty } from '../../shared/utils/validation/common.validation';
 
 @Injectable()
 export class UserService {
@@ -15,9 +17,16 @@ export class UserService {
     private readonly masterService: MasterService,
   ) {}
 
-  async getUser(payload: GetUserArgs): Promise<User | null> {
+  async getUser(
+    payload: GetUserArgs,
+    options?: ServiceActionOptions,
+  ): Promise<User | null> {
+    if (options?.validateDTO) {
+      await validateDTO(payload, GetUserArgs);
+    }
+
     if (isDeepEmpty(payload)) {
-      throw new Error('Arguments is empty.');
+      throw new Error("Args is empty.");
     }
 
     const where: WhereOptions<UserModel> = {};
@@ -46,10 +55,16 @@ export class UserService {
 
   async createUserIfNotExists(
     payload: CreateUserIfNotExistsInput,
+    options?: ServiceActionOptions,
   ): Promise<User> {
+    if (options?.validateDTO) {
+      await validateDTO(payload, CreateUserIfNotExistsInput);
+    }
+
     const identifyRole = await this.masterService.findUserRoleByName({
       name: payload.role,
     });
+
     if (!identifyRole) {
       throw new Error('Role does not exists.');
     }
