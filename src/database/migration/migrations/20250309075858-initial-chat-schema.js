@@ -19,6 +19,14 @@ module.exports = {
           name VARCHAR(128) UNIQUE NOT NULL
         );
       `, { transaction });
+      
+      // Create master_user_genders table
+      await queryInterface.sequelize.query(`
+        CREATE TABLE IF NOT EXISTS master_user_genders (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          name VARCHAR(128) UNIQUE NOT NULL
+        );
+      `, { transaction });
 
       // Create users table
       await queryInterface.sequelize.query(`
@@ -27,11 +35,13 @@ module.exports = {
           username VARCHAR(128) UNIQUE NOT NULL,
           aka varchar(64) NOT NULL,
           user_role_id UUID,
+          user_gender_id UUID,
           is_active BOOLEAN DEFAULT TRUE,
           created_at TIMESTAMPTZ DEFAULT now(),
           updated_at TIMESTAMPTZ DEFAULT now(),
           deleted_at timestamptz,
-          FOREIGN KEY (user_role_id) REFERENCES master_user_roles(id) ON DELETE SET NULL
+          FOREIGN KEY (user_role_id) REFERENCES master_user_roles(id) ON DELETE SET NULL,
+          FOREIGN KEY (user_gender_id) REFERENCES master_user_genders(id) ON DELETE SET NULL
         );
       `, { transaction });
 
