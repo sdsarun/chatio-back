@@ -61,12 +61,20 @@ export class UserService {
       await validateDTO(payload, CreateUserIfNotExistsInput);
     }
 
-    const identifyRole = await this.masterService.findUserRoleByName({
-      name: payload.role,
-    });
+    const [
+      identifyRole,
+      identifyGender
+    ] = await Promise.all([
+      this.masterService.findUserRoleByName({ name: payload.role }),
+      this.masterService.findUserGenderByName({ name: payload.gender }),
+    ])
 
     if (!identifyRole) {
       throw new Error('Role does not exists.');
+    }
+
+    if (!identifyGender) {
+      throw new Error("Gender does not exists.");
     }
 
     const [userCreated] = await this.user.upsert(
@@ -74,6 +82,7 @@ export class UserService {
         username: payload.username.toLowerCase(),
         aka: payload?.aka?.toLowerCase() || payload.username.toLowerCase(),
         userRoleId: identifyRole.id,
+        userGenderId: identifyGender.id,
       },
       { returning: true },
     );
