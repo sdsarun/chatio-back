@@ -12,6 +12,7 @@ import {
   UpdatedAt,
 } from 'sequelize-typescript';
 import { MasterUserRole } from './master-user-role.model';
+import { MasterUserGender } from './master-user-gender.model';
 
 export type UserCreation = Partial<
   Pick<
@@ -20,6 +21,7 @@ export type UserCreation = Partial<
     | 'username'
     | 'aka'
     | 'userRoleId'
+    | 'userGenderId'
     | 'createdAt'
     | 'updatedAt'
     | 'deletedAt'
@@ -53,6 +55,14 @@ export class User extends Model<User, UserCreation> {
   })
   userRoleId!: string;
 
+  @ForeignKey(() => MasterUserGender)
+  @Column({
+    field: 'user_gender_id',
+    type: DataType.UUID,
+    onDelete: 'SET NULL',
+  })
+  userGenderId!: string;
+
   @Column({ field: 'is_active', type: DataType.BOOLEAN, defaultValue: true })
   isActive!: boolean;
 
@@ -76,4 +86,7 @@ export class User extends Model<User, UserCreation> {
 
   @BelongsTo(() => MasterUserRole)
   userRole!: MasterUserRole;
+
+  @BelongsTo(() => MasterUserGender)
+  userGender!: MasterUserGender;
 }

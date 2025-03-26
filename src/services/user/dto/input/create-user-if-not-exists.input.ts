@@ -1,6 +1,6 @@
-import { IsIn, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsEnum, IsIn, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { Field, InputType } from "@nestjs/graphql";
-import { UserRole } from "../../../master/master.constants";
+import { UserGender, UserRole } from "../../../master/master.constants";
 
 @InputType()
 export class CreateUserIfNotExistsInput {
@@ -9,10 +9,15 @@ export class CreateUserIfNotExistsInput {
   @IsNotEmpty()
   username: string;
 
-  @Field(() => String)
-  @IsIn([UserRole.Guest, UserRole.Registered])
+  @Field(() => UserRole)
+  @IsIn([UserRole.GUEST, UserRole.REGISTERED])
   @IsNotEmpty()
   role: UserRole;
+
+  @Field(() => UserGender)
+  @IsEnum(UserGender)
+  @IsNotEmpty()
+  gender: UserGender
 
   @Field({ nullable: true })
   @IsString()

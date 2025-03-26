@@ -7,6 +7,11 @@ type UserRole {
   name: String!
 }
 
+type UserGender {
+  id: ID!
+  name: String!
+}
+
 type User {
   id: ID!
   username: String!
@@ -17,6 +22,7 @@ type User {
   updatedAt: DateTime
   deletedAt: DateTime
   userRole: UserRole
+  userGender: UserGender
 }
 
 """
@@ -34,6 +40,18 @@ type Mutation {
 
 input CreateUserIfNotExistsInput {
   username: String!
-  role: String!
+  role: UserRoleType!
+  gender: UserGenderType!
   aka: String
+}
+
+enum UserRoleType {
+  REGISTERED
+  GUEST
+}
+
+enum UserGenderType {
+  MALE
+  FEMALE
+  RATHER_NOT_SAY
 }

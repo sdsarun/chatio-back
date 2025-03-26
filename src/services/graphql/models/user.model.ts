@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType  } from '@nestjs/graphql';
 import { UserRole } from './user-role.model';
+import { UserGender } from './user-gender.model';
 
 @ObjectType()
 export class User {
@@ -13,4 +14,5 @@ export class User {
   updatedAt?: Date;
   deletedAt?: Date;
   userRole?: UserRole;
+  userGender?: UserGender;
 }
