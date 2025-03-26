@@ -7,6 +7,11 @@ type UserRole {
   name: String!
 }
 
+type UserGender {
+  id: ID!
+  name: String!
+}
+
 type User {
   id: ID!
   username: String!
@@ -17,6 +22,7 @@ type User {
   updatedAt: DateTime
   deletedAt: DateTime
   userRole: UserRole
+  userGender: UserGender
 }
 
 """
