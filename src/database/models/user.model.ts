@@ -21,6 +21,7 @@ export type UserCreation = Partial<
     | 'username'
     | 'aka'
     | 'userRoleId'
+    | 'userGenderId'
     | 'createdAt'
     | 'updatedAt'
     | 'deletedAt'
