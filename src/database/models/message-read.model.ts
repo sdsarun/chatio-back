@@ -14,7 +14,7 @@ export type MessageReadCreation = Partial<
   Pick<MessageRead, 'id' | 'messageId' | 'userId' | 'readAt'>
 >;
 
-@Table({ tableName: 'message_reads' })
+@Table({ tableName: 'message_reads', timestamps: false, paranoid: false })
 export class MessageRead extends Model<MessageRead, MessageReadCreation> {
   @PrimaryKey
   @Default(DataType.UUIDV4)

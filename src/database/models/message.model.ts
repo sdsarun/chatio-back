@@ -26,7 +26,7 @@ export type MessageCreation = Partial<
 >;
 
 @Table({ tableName: 'messages' })
-export class Message extends Model<Message> {
+export class Message extends Model<Message, MessageCreation> {
   @Column({
     type: DataType.UUID,
     primaryKey: true,
