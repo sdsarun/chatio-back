@@ -1,7 +1,7 @@
 import { getModelToken } from '@nestjs/sequelize';
 import { Test } from '@nestjs/testing';
 import { User } from '../../database/models/user.model';
-import { UserRole } from '../master/master.constants';
+import { UserGender, UserRole } from '../master/master.constants';
 import { MasterService } from '../master/master.service';
 import { CreateUserIfNotExistsInput } from './dto/input/create-user-if-not-exists.input';
 import { UserService } from './user.service';
@@ -18,6 +18,7 @@ describe('UserService', () => {
   const mockMasterService: Partial<jest.Mocked<MasterService>> = {
     findUserRoleById: jest.fn(),
     findUserRoleByName: jest.fn(),
+    findUserGenderByName: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -50,38 +51,39 @@ describe('UserService', () => {
     it('create user when valid payload', async () => {
       // arrange
       const testCreateUserPayload: CreateUserIfNotExistsInput = {
-        role: UserRole.Guest,
+        role: UserRole.GUEST,
+        gender: UserGender.MALE,
         username: 'mockusername',
       };
 
       const mockUserRoleResolve = {
         id: '26f3ee7c-511d-4a3a-8a5e-30b0af5ba63e',
-        name: UserRole.Guest,
+        name: UserRole.GUEST,
       };
+
+      const mockUserGenderResolve = {
+        id: "99999999-511d-4a3a-8a5e-30b0af5ba63e",
+        name: UserGender.MALE
+      }
 
       const mockUserCreatedResolve = {
         id: '12a7da36-22ec-4e1d-8fa4-73ba8a57a2de',
         username: 'mockusername',
         aka: 'mockusername',
         userRole: mockUserRoleResolve,
+        userGender: mockUserGenderResolve,
       };
 
-      mockMasterService.findUserRoleByName?.mockResolvedValue(
-        mockUserRoleResolve,
-      );
-      mockUserModel.upsert?.mockResolvedValue([
-        mockUserCreatedResolve as any,
-        true,
-      ]);
+      mockMasterService.findUserRoleByName?.mockResolvedValue(mockUserRoleResolve);
+      mockMasterService.findUserGenderByName?.mockResolvedValue(mockUserGenderResolve);
+      mockUserModel.upsert?.mockResolvedValue([mockUserCreatedResolve as any, true]);
 
       const mockGetUserFn = jest
         .spyOn(userService, 'getUser')
         .mockResolvedValue(mockUserCreatedResolve);
 
       // act
-      const userCreated = await userService.createUserIfNotExists(
-        testCreateUserPayload,
-      );
+      const userCreated = await userService.createUserIfNotExists(testCreateUserPayload);
 
       // assert
       expect(mockUserModel.upsert).toHaveBeenCalledWith(
@@ -95,16 +97,14 @@ describe('UserService', () => {
         }),
       );
 
-      expect(mockGetUserFn).toHaveBeenCalledWith(
-        expect.objectContaining({ userId: mockUserCreatedResolve.id }),
-      );
+      expect(mockGetUserFn).toHaveBeenCalledWith(expect.objectContaining({ userId: mockUserCreatedResolve.id }),);
       expect(userCreated).toMatchObject(mockUserCreatedResolve);
     });
 
     it('throw error when invalid payload', () => {
       const mockUserRoleResolve = {
         id: '26f3ee7c-511d-4a3a-8a5e-30b0af5ba63e',
-        name: UserRole.Guest,
+        name: UserRole.GUEST,
       };
 
       const mockUserCreatedResolve = {
@@ -140,7 +140,7 @@ describe('UserService', () => {
 
       const mockUserRoleResolve = {
         id: '26f3ee7c-511d-4a3a-8a5e-30b0af5ba63e',
-        name: UserRole.Guest,
+        name: UserRole.GUEST,
       };
 
       const mockUserFindOneResolve = {
