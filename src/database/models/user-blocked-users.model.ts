@@ -15,7 +15,7 @@ export type UserBlockedUserCreation = Partial<
   Pick<UserBlockedUser, 'id' | 'userId' | 'blockedUserId' | 'blockedAt'>
 >;
 
-@Table({ tableName: 'user_blocked_users' })
+@Table({ tableName: 'user_blocked_users', updatedAt: false, paranoid: false })
 export class UserBlockedUser extends Model<
   UserBlockedUser,
   UserBlockedUserCreation

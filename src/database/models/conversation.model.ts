@@ -14,7 +14,7 @@ export type ConversationCreation = Partial<
   Pick<Conversation, 'id' | 'conversationTypeId' | 'createdAt' | 'deletedAt'>
 >;
 
-@Table({ tableName: 'conversations' })
+@Table({ tableName: 'conversations', updatedAt: false })
 export class Conversation extends Model<Conversation, ConversationCreation> {
   @Column({
     type: DataType.UUID,
