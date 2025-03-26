@@ -8,7 +8,7 @@ export enum UserRole {
 export enum UserGender {
   MALE = "MALE",
   FEMALE = "FEMALE",
-  RATHERNOTSAY = "RATHER_NOT_SAY",
+  RATHER_NOT_SAY = "RATHER_NOT_SAY",
 }
 
 registerEnumType(UserRole, {
