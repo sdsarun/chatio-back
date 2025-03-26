@@ -40,6 +40,18 @@ type Mutation {
 
 input CreateUserIfNotExistsInput {
   username: String!
-  role: String!
+  role: UserRoleType!
+  gender: UserGenderType!
   aka: String
+}
+
+enum UserRoleType {
+  REGISTERED
+  GUEST
+}
+
+enum UserGenderType {
+  MALE
+  FEMALE
+  RATHERNOTSAY
 }
