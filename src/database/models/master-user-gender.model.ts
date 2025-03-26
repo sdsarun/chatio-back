@@ -13,7 +13,7 @@ export type MasterUserGenderCreation = Partial<
   Pick<MasterUserGender, 'id' | 'name'>
 >;
 
-@Table({ tableName: 'master_user_genders' })
+@Table({ tableName: 'master_user_genders', timestamps: false, paranoid: false })
 export class MasterUserGender extends Model<
   MasterUserGender,
   MasterUserGenderCreation

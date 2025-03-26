@@ -13,7 +13,7 @@ export type MasterUserRoleCreation = Partial<
   Pick<MasterUserRole, 'id' | 'name'>
 >;
 
-@Table({ tableName: 'master_user_roles' })
+@Table({ tableName: 'master_user_roles', timestamps: false, paranoid: false })
 export class MasterUserRole extends Model<
   MasterUserRole,
   MasterUserRoleCreation
