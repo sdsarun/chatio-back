@@ -53,5 +53,5 @@ enum UserRoleType {
 enum UserGenderType {
   MALE
   FEMALE
-  RATHERNOTSAY
+  RATHER_NOT_SAY
 }
