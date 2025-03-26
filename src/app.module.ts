@@ -16,6 +16,7 @@ import { ApplyRequestIdMiddleware } from './common/middlewares/apply-request-id.
 import { DatabaseModule } from './database/database.module';
 import { GraphQLModule } from './services/graphql/graphql.module';
 import { MasterModule } from './services/master/master.module';
+import { UserModule } from './services/user/user.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { MasterModule } from './services/master/master.module';
     DatabaseModule,
     GraphQLModule,
     MasterModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
