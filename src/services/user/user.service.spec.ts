@@ -7,6 +7,7 @@ import { CreateUserIfNotExistsInput } from './dto/input/create-user-if-not-exist
 import { UserService } from './user.service';
 import { GetUserArgs } from './dto/args/get-user.args';
 import randomUniqueName from '../../shared/utils/generators/random-unique-name.generator';
+import { Op } from 'sequelize';
 
 jest.mock('../../shared/utils/generators/random-unique-name.generator', () => ({
   default: jest.fn()
@@ -219,7 +220,9 @@ describe('UserService', () => {
       expect(mockUserModel.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
-            id: testGetUserPayload.userId
+            [Op.and]: expect.arrayContaining([
+              expect.objectContaining({ id: testGetUserPayload.userId }),
+            ]),
           }),
           raw: true,
           include: expect.objectContaining({ all: true }),
@@ -244,7 +247,9 @@ describe('UserService', () => {
       expect(mockUserModel.findOne).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
-            id: testGetUserPayload.userId
+            [Op.and]: expect.arrayContaining([
+              expect.objectContaining({ id: testGetUserPayload.userId }),
+            ]),
           }),
           raw: true,
           include: expect.objectContaining({ all: true }),
