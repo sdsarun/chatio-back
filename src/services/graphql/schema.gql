@@ -39,7 +39,7 @@ type Mutation {
 }
 
 input CreateUserIfNotExistsInput {
-  username: String!
+  username: String
   role: UserRoleType!
   gender: UserGenderType!
   aka: String

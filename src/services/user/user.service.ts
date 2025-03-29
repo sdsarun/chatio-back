@@ -79,7 +79,7 @@ export class UserService {
     const username: string =
       payload.role === UserRole.GUEST
         ? randomUniqueName()
-        : payload.username.toLowerCase();
+        : payload?.username?.toLowerCase();
 
     const aka: string =
       payload.role === UserRole.GUEST
