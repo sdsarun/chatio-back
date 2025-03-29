@@ -1,13 +1,20 @@
-import { IsEnum, IsIn, IsNotEmpty, IsOptional, IsString, ValidateIf } from "class-validator";
-import { Field, InputType } from "@nestjs/graphql";
-import { UserGender, UserRole } from "../../../master/master.constants";
+import {
+  IsEnum,
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
+import { Field, InputType } from '@nestjs/graphql';
+import { UserGender, UserRole } from '../../../master/master.constants';
 
 @InputType()
 export class CreateUserIfNotExistsInput {
   @ValidateIf((dto: CreateUserIfNotExistsInput) => dto.role === UserRole.REGISTERED)
-  @Field()
+  @Field({ nullable: true })
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: "username is required when create with role REGISTERED" })
   username: string;
 
   @Field(() => UserRole)
@@ -18,7 +25,7 @@ export class CreateUserIfNotExistsInput {
   @Field(() => UserGender)
   @IsEnum(UserGender)
   @IsNotEmpty()
-  gender: UserGender
+  gender: UserGender;
 
   @Field({ nullable: true })
   @IsString()
