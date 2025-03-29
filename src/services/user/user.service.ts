@@ -44,6 +44,7 @@ export class UserService {
     if (payload?.username) {
       where.username = payload.username.toLowerCase();
     }
+      console.log("[LOG] - user.service.ts:46 - UserService - where:", where)
 
     const user = await this.user.findOne({
       where,
@@ -78,7 +79,7 @@ export class UserService {
 
     const username: string =
       payload.role === UserRole.GUEST
-        ? randomUniqueName()
+        ? randomUniqueName().toLowerCase()
         : payload?.username?.toLowerCase();
 
     const aka: string =
