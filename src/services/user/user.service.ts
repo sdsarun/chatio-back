@@ -9,6 +9,8 @@ import { MasterService } from '../master/master.service';
 import { GetUserArgs } from './dto/args/get-user.args';
 import { CreateUserIfNotExistsInput } from './dto/input/create-user-if-not-exists.input';
 import { isDeepEmpty } from '../../shared/utils/validation/common.validation';
+import { UserRole } from '../master/master.constants';
+import randomUniqueName from '../../shared/utils/generators/random-unique-name.generator';
 
 @Injectable()
 export class UserService {
@@ -26,7 +28,7 @@ export class UserService {
     }
 
     if (isDeepEmpty(payload)) {
-      throw new Error("Args is empty.");
+      throw new Error('Args is empty.');
     }
 
     const where: WhereOptions<UserModel> = {};
@@ -61,26 +63,33 @@ export class UserService {
       await validateDTO(payload, CreateUserIfNotExistsInput);
     }
 
-    const [
-      identifyRole,
-      identifyGender
-    ] = await Promise.all([
+    const [identifyRole, identifyGender] = await Promise.all([
       this.masterService.findUserRoleByName({ name: payload.role }),
       this.masterService.findUserGenderByName({ name: payload.gender }),
-    ])
+    ]);
 
     if (!identifyRole) {
       throw new Error('Role does not exists.');
     }
 
     if (!identifyGender) {
-      throw new Error("Gender does not exists.");
+      throw new Error('Gender does not exists.');
     }
+
+    const username: string =
+      payload.role === UserRole.GUEST
+        ? randomUniqueName()
+        : payload.username.toLowerCase();
+
+    const aka: string =
+      payload.role === UserRole.GUEST
+        ? username
+        : payload?.aka?.toLowerCase() || payload?.username?.toLowerCase();
 
     const [userCreated] = await this.user.upsert(
       {
-        username: payload.username.toLowerCase(),
-        aka: payload?.aka?.toLowerCase() || payload.username.toLowerCase(),
+        username,
+        aka,
         userRoleId: identifyRole.id,
         userGenderId: identifyGender.id,
       },

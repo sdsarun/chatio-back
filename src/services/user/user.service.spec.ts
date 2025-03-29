@@ -6,6 +6,11 @@ import { MasterService } from '../master/master.service';
 import { CreateUserIfNotExistsInput } from './dto/input/create-user-if-not-exists.input';
 import { UserService } from './user.service';
 import { GetUserArgs } from './dto/args/get-user.args';
+import randomUniqueName from '../../shared/utils/generators/random-unique-name.generator';
+
+jest.mock('../../shared/utils/generators/random-unique-name.generator', () => ({
+  default: jest.fn()
+}))
 
 describe('UserService', () => {
   let userService: UserService;
@@ -46,58 +51,112 @@ describe('UserService', () => {
   });
 
   describe('createUserIfNotExists', () => {
-
     // this function validate input already, not testing payload missing
-    it('create user when valid payload', async () => {
-      // arrange
-      const testCreateUserPayload: CreateUserIfNotExistsInput = {
-        role: UserRole.GUEST,
-        gender: UserGender.MALE,
-        username: 'mockusername',
-      };
 
+    it('should create user when role is GUEST and username is generated', async () => {
       const mockUserRoleResolve = {
         id: '26f3ee7c-511d-4a3a-8a5e-30b0af5ba63e',
         name: UserRole.GUEST,
       };
-
+  
       const mockUserGenderResolve = {
         id: "99999999-511d-4a3a-8a5e-30b0af5ba63e",
-        name: UserGender.MALE
-      }
-
+        name: UserGender.MALE,
+      };
+  
       const mockUserCreatedResolve = {
         id: '12a7da36-22ec-4e1d-8fa4-73ba8a57a2de',
-        username: 'mockusername',
-        aka: 'mockusername',
+        username: 'mock-username-1234',
+        aka: 'mock-username-1234',
         userRole: mockUserRoleResolve,
         userGender: mockUserGenderResolve,
       };
-
+  
+      const testCreateUserPayload: CreateUserIfNotExistsInput = {
+        role: UserRole.GUEST,
+        gender: UserGender.MALE,
+        username: 'mock-username-1234',  // this username will be ignored for GUEST role
+        aka: 'mock-username-1234',
+      };
+  
+      (randomUniqueName as jest.Mock).mockReturnValue("mock-username-1234");
       mockMasterService.findUserRoleByName?.mockResolvedValue(mockUserRoleResolve);
       mockMasterService.findUserGenderByName?.mockResolvedValue(mockUserGenderResolve);
       mockUserModel.upsert?.mockResolvedValue([mockUserCreatedResolve as any, true]);
-
+  
       const mockGetUserFn = jest
         .spyOn(userService, 'getUser')
         .mockResolvedValue(mockUserCreatedResolve);
-
+  
       // act
       const userCreated = await userService.createUserIfNotExists(testCreateUserPayload);
-
+  
       // assert
       expect(mockUserModel.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
-          username: testCreateUserPayload.username,
-          aka: testCreateUserPayload.username,
+          username: 'mock-username-1234',  // GUEST role generates the username
+          aka: 'mock-username-1234',  // aka is the same as username for GUEST role
           userRoleId: mockUserRoleResolve.id,
         }),
         expect.objectContaining({
           returning: true,
         }),
       );
-
-      expect(mockGetUserFn).toHaveBeenCalledWith(expect.objectContaining({ userId: mockUserCreatedResolve.id }),);
+  
+      expect(mockGetUserFn).toHaveBeenCalledWith(expect.objectContaining({ userId: mockUserCreatedResolve.id }));
+      expect(userCreated).toMatchObject(mockUserCreatedResolve);
+    });
+  
+    it('should create user when role is REGISTERED and username and aka are used', async () => {
+      const mockUserRoleResolve = {
+        id: '26f3ee7c-511d-4a3a-8a5e-30b0af5ba63e',
+        name: UserRole.REGISTERED,
+      };
+  
+      const mockUserGenderResolve = {
+        id: "99999999-511d-4a3a-8a5e-30b0af5ba63e",
+        name: UserGender.MALE,
+      };
+  
+      const mockUserCreatedResolve = {
+        id: '12a7da36-22ec-4e1d-8fa4-73ba8a57a2de',
+        username: 'mock-username-registered',
+        aka: 'mock-aka-registered',
+        userRole: mockUserRoleResolve,
+        userGender: mockUserGenderResolve,
+      };
+  
+      const testCreateUserPayload: CreateUserIfNotExistsInput = {
+        role: UserRole.REGISTERED,
+        gender: UserGender.MALE,
+        username: 'mock-username-registered',
+        aka: 'mock-aka-registered',
+      };
+  
+      mockMasterService.findUserRoleByName?.mockResolvedValue(mockUserRoleResolve);
+      mockMasterService.findUserGenderByName?.mockResolvedValue(mockUserGenderResolve);
+      mockUserModel.upsert?.mockResolvedValue([mockUserCreatedResolve as any, true]);
+  
+      const mockGetUserFn = jest
+        .spyOn(userService, 'getUser')
+        .mockResolvedValue(mockUserCreatedResolve);
+  
+      // act
+      const userCreated = await userService.createUserIfNotExists(testCreateUserPayload);
+  
+      // assert
+      expect(mockUserModel.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          username: 'mock-username-registered',  // Registered role uses the provided username
+          aka: 'mock-aka-registered',  // aka is used for Registered role
+          userRoleId: mockUserRoleResolve.id,
+        }),
+        expect.objectContaining({
+          returning: true,
+        }),
+      );
+  
+      expect(mockGetUserFn).toHaveBeenCalledWith(expect.objectContaining({ userId: mockUserCreatedResolve.id }));
       expect(userCreated).toMatchObject(mockUserCreatedResolve);
     });
 

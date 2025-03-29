@@ -1,9 +1,10 @@
-import { IsEnum, IsIn, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsEnum, IsIn, IsNotEmpty, IsOptional, IsString, ValidateIf } from "class-validator";
 import { Field, InputType } from "@nestjs/graphql";
 import { UserGender, UserRole } from "../../../master/master.constants";
 
 @InputType()
 export class CreateUserIfNotExistsInput {
+  @ValidateIf((dto: CreateUserIfNotExistsInput) => dto.role === UserRole.REGISTERED)
   @Field()
   @IsString()
   @IsNotEmpty()
