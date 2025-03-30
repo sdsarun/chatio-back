@@ -34,6 +34,7 @@ export class UserConnection extends Model<UserConnection, UserConnectionCreation
   @Column({
     type: DataType.UUID,
     field: 'requester_id',
+    onDelete: 'SET NULL',
   })
   requesterId!: string;
 
@@ -41,6 +42,7 @@ export class UserConnection extends Model<UserConnection, UserConnectionCreation
   @Column({
     type: DataType.UUID,
     field: 'addressee_id',
+    onDelete: 'SET NULL',
   })
   addresseeId!: string;
 
