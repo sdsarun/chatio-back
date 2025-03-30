@@ -9,6 +9,7 @@ export class User {
   username: string;
   aka: string;
   userRoleId?: string;
+  userGenderId?: string;
   isActive?: boolean;
   createdAt?: Date;
   updatedAt?: Date;

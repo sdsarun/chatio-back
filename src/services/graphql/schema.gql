@@ -17,6 +17,7 @@ type User {
   username: String!
   aka: String!
   userRoleId: String
+  userGenderId: String
   isActive: Boolean
   createdAt: DateTime
   updatedAt: DateTime
