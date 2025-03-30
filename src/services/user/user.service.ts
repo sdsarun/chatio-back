@@ -140,7 +140,7 @@ export class UserService {
       returning: true,
     });
 
-    return this.getUser({ userId: userCreated.id }) as Promise<User>;
+    return this.getUser({ userId: userCreated.id }, options) as Promise<User>;
   }
 
   async updateUser(
