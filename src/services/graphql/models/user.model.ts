@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType  } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { UserRole } from './user-role.model';
 import { UserGender } from './user-gender.model';
 

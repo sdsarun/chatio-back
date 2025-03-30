@@ -37,12 +37,13 @@ type Query {
 
 type Mutation {
   createUserIfNotExists(createUserIfNotExistsInput: CreateUserIfNotExistsInput!): User!
+  updateUserProfile(id: ID!, updateUserData: UpdateUserProfileInput!): User!
 }
 
 input CreateUserIfNotExistsInput {
   username: String
   role: UserRoleType!
-  gender: UserGenderType!
+  gender: UserGenderType
   aka: String
 }
 
@@ -55,4 +56,9 @@ enum UserGenderType {
   MALE
   FEMALE
   RATHER_NOT_SAY
+}
+
+input UpdateUserProfileInput {
+  gender: UserGenderType
+  aka: String
 }

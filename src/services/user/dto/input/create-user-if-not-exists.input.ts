@@ -22,10 +22,10 @@ export class CreateUserIfNotExistsInput {
   @IsNotEmpty()
   role: UserRole;
 
-  @Field(() => UserGender)
+  @Field(() => UserGender, { nullable: true })
   @IsEnum(UserGender)
-  @IsNotEmpty()
-  gender: UserGender;
+  @IsOptional()
+  gender?: UserGender;
 
   @Field({ nullable: true })
   @IsString()
