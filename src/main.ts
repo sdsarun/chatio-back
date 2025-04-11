@@ -1,16 +1,19 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ConfigurationService } from './configuration/configuration.service';
 import { Logger } from './logger/logger.service';
+import helmet from 'helmet';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
   const logger = app.get(Logger);
   const configurationService = app.get(ConfigurationService);
+
+  app.use(cookieParser());
 
   app.use(
     helmet({
