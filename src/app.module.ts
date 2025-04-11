@@ -17,9 +17,15 @@ import { DatabaseModule } from './database/database.module';
 import { GraphQLModule } from './services/graphql/graphql.module';
 import { MasterModule } from './services/master/master.module';
 import { UserModule } from './services/user/user.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
+      global: true,
+    }),
     ConfigurationModule,
     LoggerModule,
     DatabaseModule,
