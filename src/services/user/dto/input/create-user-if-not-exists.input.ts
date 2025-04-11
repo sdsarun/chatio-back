@@ -15,7 +15,7 @@ export class CreateUserIfNotExistsInput {
   @Field({ nullable: true })
   @IsString()
   @IsNotEmpty({ message: "username is required when create with role REGISTERED" })
-  username: string;
+  username?: string;
 
   @Field(() => UserRole)
   @IsIn([UserRole.GUEST, UserRole.REGISTERED])

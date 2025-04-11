@@ -41,4 +41,16 @@ export class EnvironmentVariables {
 
   @IsTrueOrFalseString()
   DB_SSL: string;
+
+  @IsString()
+  JWT_ISSUER: string;
+
+  @IsString()
+  JWT_ACCESS_TOKEN_SECRET: string;
+
+  @IsString()
+  JWT_ACCESS_TOKEN_EXP: string;
+
+  @IsString()
+  OAUTH_GOOGLE_CLIENT_ID: string;
 }

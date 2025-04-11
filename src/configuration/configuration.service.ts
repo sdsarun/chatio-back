@@ -15,6 +15,7 @@ import {
 } from '../shared/constants/env.constant';
 import { SequelizeModuleOptions } from '@nestjs/sequelize';
 import DB_MODELS from '../database/models';
+import { JwtSignOptions } from '@nestjs/jwt';
 
 @Injectable()
 export class ConfigurationService {
@@ -106,6 +107,27 @@ export class ConfigurationService {
       dialectOptions: {
         ssl: this.config.get('DB_SSL') === 'true',
       }
+    }
+  }
+
+  get jwtConfig(): { 
+    accessTokenConfig: JwtSignOptions;
+  } {
+
+    return {
+      accessTokenConfig: {
+        secret: this.config.get("JWT_ACCESS_TOKEN_SECRET"),
+        expiresIn: this.config.get("JWT_ACCESS_TOKEN_EXP"),
+        issuer: this.config.get("JWT_ISSUER"),
+      },
+    }
+  }
+
+  get oauthGoogleConfig(): {
+    clientId: string;
+  } {
+    return {
+      clientId: this.config.get("OAUTH_GOOGLE_CLIENT_ID")!
     }
   }
 }
