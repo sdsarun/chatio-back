@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigurationModule } from './configuration/configuration.module';
@@ -18,6 +13,7 @@ import { GraphQLModule } from './services/graphql/graphql.module';
 import { MasterModule } from './services/master/master.module';
 import { UserModule } from './services/user/user.module';
 import { HttpModule } from '@nestjs/axios';
+import { AuthModule } from './services/auth/auth.module';
 
 @Module({
   imports: [
@@ -32,6 +28,7 @@ import { HttpModule } from '@nestjs/axios';
     GraphQLModule,
     MasterModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
@@ -52,8 +49,6 @@ import { HttpModule } from '@nestjs/axios';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(ApplyRequestIdMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
+    consumer.apply(ApplyRequestIdMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }
