@@ -31,6 +31,7 @@
   "dependencies": {
     "@apollo/server": "^4.11.3",
     "@nestjs/apollo": "^13.0.3",
+    "@nestjs/axios": "^4.0.0",
     "@nestjs/common": "^11.0.10",
     "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.10",
@@ -41,6 +42,7 @@
     "@nestjs/sequelize": "^11.0.0",
     "@nestjs/swagger": "^11.0.4",
     "@nestjs/websockets": "^11.0.11",
+    "axios": "^1.8.4",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",
