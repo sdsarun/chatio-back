@@ -122,4 +122,12 @@ export class ConfigurationService {
       },
     }
   }
+
+  get oauthGoogleConfig(): {
+    clientId: string;
+  } {
+    return {
+      clientId: this.config.get("OAUTH_GOOGLE_CLIENT_ID")!
+    }
+  }
 }

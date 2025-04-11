@@ -50,4 +50,7 @@ export class EnvironmentVariables {
 
   @IsString()
   JWT_ACCESS_TOKEN_EXP: string;
+
+  @IsString()
+  OAUTH_GOOGLE_CLIENT_ID: string;
 }
