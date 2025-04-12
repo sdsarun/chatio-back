@@ -10,7 +10,6 @@ import { UserService } from '../user/user.service';
 import { GoogleSignInDTO } from './dto/google-signin.dto';
 import { TokenService } from './token.service';
 import { GoogleIdTokenPayload } from './types/google.types';
-import { GuestSignInDTO } from './dto/guest-signin.dto';
 import { isAxiosError } from 'axios';
 import { VerifyGoogleIDTokenError } from '../../common/exceptions/google-oauth.exception';
 
@@ -46,12 +45,12 @@ export class AuthService {
         throw new ForbiddenException('User account is inactive. Please contact support to activate your account.');
       }
 
-      const accessToken = await this.tokenService.generateAccessToken(userInfo);
+      const accessToken = await this.tokenService.generateAccessToken({ userInfo });
       const { exp: accessTokenExpInMS } = this.tokenService.decode(accessToken);
 
       return {
         accessToken,
-        accessTokenExpInMS,
+        accessTokenExpInMS: accessTokenExpInMS * 1000,
       };
 
     } catch (error) {
@@ -64,27 +63,20 @@ export class AuthService {
     }
   }
 
-  async guestSignIn(
-    payload: GuestSignInDTO,
-    options?: ServiceActionOptions,
-  ): Promise<{
+  async guestSignIn(): Promise<{
     accessToken: string;
     accessTokenExpInMS: number;
   }> {
     this.logger.setContext(this.googleSignIn.name)
     try {
-      if (options?.validateDTO) {
-        await validateDTO(payload, GuestSignInDTO);
-      }
-
       const userInfo = await this.userService.createUserIfNotExists({ role: UserRole.GUEST });
 
-      const accessToken = await this.tokenService.generateAccessToken(userInfo);
+      const accessToken = await this.tokenService.generateAccessToken({ userInfo });
       const { exp: accessTokenExpInMS } = this.tokenService.decode(accessToken);
 
       return {
         accessToken,
-        accessTokenExpInMS,
+        accessTokenExpInMS: accessTokenExpInMS * 1000,
       };
     } catch (error) {
       this.logger.error(error);
