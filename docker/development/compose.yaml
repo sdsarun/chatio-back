@@ -1,6 +1,7 @@
 services:
   chaio-back:
-    container_name: chaio-back-dev
+    container_name: chatio-back-dev
+    image: chatio-back-dev
     build:
       context: ../../
       dockerfile: docker/development/Dockerfile
