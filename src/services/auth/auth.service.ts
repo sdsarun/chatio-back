@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { ConfigurationService } from '../../configuration/configuration.service';
 import { Logger } from '../../logger/logger.service';
@@ -11,6 +11,8 @@ import { GoogleSignInDTO } from './dto/google-signin.dto';
 import { TokenService } from './token.service';
 import { GoogleIdTokenPayload } from './types/google.types';
 import { GuestSignInDTO } from './dto/guest-signin.dto';
+import { isAxiosError } from 'axios';
+import { VerifyGoogleIDTokenError } from '../../common/exceptions/google-oauth.exception';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +42,9 @@ export class AuthService {
 
       const userInfo = await this.userService.createUserIfNotExists({ username: email, role: UserRole.REGISTERED })
 
-      this.logger.log(userInfo);
+      if (!userInfo.isActive) {
+        throw new ForbiddenException('User account is inactive. Please contact support to activate your account.');
+      }
 
       const accessToken = await this.tokenService.generateAccessToken(userInfo);
       const { exp: accessTokenExpInMS } = this.tokenService.decode(accessToken);
@@ -51,7 +55,11 @@ export class AuthService {
       };
 
     } catch (error) {
-      this.logger.error(error);
+      if (isAxiosError(error)) {
+        this.logger.error(error.response?.data);
+        const googleErrorMessage = error.response?.data as { error: string };
+        throw new VerifyGoogleIDTokenError(googleErrorMessage.error)
+      }
       throw error;
     }
   }
@@ -70,7 +78,6 @@ export class AuthService {
       }
 
       const userInfo = await this.userService.createUserIfNotExists({ role: UserRole.GUEST });
-      this.logger.log(userInfo);
 
       const accessToken = await this.tokenService.generateAccessToken(userInfo);
       const { exp: accessTokenExpInMS } = this.tokenService.decode(accessToken);
@@ -86,6 +93,7 @@ export class AuthService {
   }
 
   private async verifyGoogleIDToken({ idToken }: GoogleSignInDTO): Promise<GoogleIdTokenPayload> {
+    this.logger.setContext(this.googleSignIn.name)
     try {
       const { data } = await firstValueFrom(
         this.http.get<GoogleIdTokenPayload>('https://oauth2.googleapis.com/tokeninfo', {
@@ -105,7 +113,6 @@ export class AuthService {
 
       return data;
     } catch (error) {
-      this.logger.setContext(this.googleSignIn.name)
       this.logger.error(error);
       throw error;
     }
