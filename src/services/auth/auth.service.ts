@@ -12,6 +12,7 @@ import { TokenService } from './token.service';
 import { GoogleIdTokenPayload } from './types/google.types';
 import { isAxiosError } from 'axios';
 import { VerifyGoogleIDTokenError } from '../../common/exceptions/google-oauth.exception';
+import { AccessTokenPayload } from './types/token-payload.types';
 
 @Injectable()
 export class AuthService {
@@ -45,7 +46,11 @@ export class AuthService {
         throw new ForbiddenException('User account is inactive. Please contact support to activate your account.');
       }
 
-      const accessToken = await this.tokenService.generateAccessToken({ userInfo });
+      const tokenPayload: AccessTokenPayload = {
+        userInfo
+      }
+
+      const accessToken = await this.tokenService.generateAccessToken(tokenPayload);
       const { exp: accessTokenExpInMS } = this.tokenService.decode(accessToken);
 
       return {
@@ -71,7 +76,11 @@ export class AuthService {
     try {
       const userInfo = await this.userService.createUserIfNotExists({ role: UserRole.GUEST });
 
-      const accessToken = await this.tokenService.generateAccessToken({ userInfo });
+      const tokenPayload: AccessTokenPayload = {
+        userInfo
+      }
+
+      const accessToken = await this.tokenService.generateAccessToken(tokenPayload);
       const { exp: accessTokenExpInMS } = this.tokenService.decode(accessToken);
 
       return {

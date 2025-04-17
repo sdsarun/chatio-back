@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { LoggerModule } from './logger/logger.module';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerInterceptor } from './common/interceptors/logger.interceptor';
 import { FormatResponseInterceptor } from './common/interceptors/format-response.interceptor';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
@@ -14,6 +14,7 @@ import { MasterModule } from './services/master/master.module';
 import { UserModule } from './services/user/user.module';
 import { HttpModule } from '@nestjs/axios';
 import { AuthModule } from './services/auth/auth.module';
+import { AuthGuard } from './services/auth/auth.guard';
 
 @Module({
   imports: [
@@ -45,6 +46,10 @@ import { AuthModule } from './services/auth/auth.module';
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
     },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard
+    }
   ],
 })
 export class AppModule implements NestModule {

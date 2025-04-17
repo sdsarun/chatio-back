@@ -8,12 +8,14 @@ import {
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { GoogleSignInDTO } from './dto/google-signin.dto';
+import { Auth } from './decorators/auth.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
   @Post('/google')
+  @Auth({ isPublic: true })
   @ApiInternalServerErrorResponse({ description: 'Something went wrong in our server or bug', })
   @ApiBadRequestResponse({ description: 'Invalid DTO or mismatch types' })
   @ApiUnauthorizedResponse({ description: 'id token invalid' })
@@ -26,8 +28,8 @@ export class AuthController {
   }
 
   @Post('/guest')
+  @Auth({ isPublic: true })
   @ApiInternalServerErrorResponse({ description: 'Something went wrong in our server or bug', })
-  @ApiUnauthorizedResponse({ description: 'id token invalid' })
   @ApiCreatedResponse({ description: 'Sign in complete.' })
   async handleGuestSignIn(): Promise<{ accessToken: string; accessTokenExpInMS: number }> {
     return this.authService.guestSignIn();
