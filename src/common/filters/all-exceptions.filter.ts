@@ -1,10 +1,12 @@
 import { ArgumentsHost, Catch, ContextType, ExceptionFilter } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { Request, Response } from 'express';
+import { Socket } from 'socket.io';
 import {
   getExceptionHttpStatus,
   getExceptionMessage,
+  parseException
 } from '../../shared/utils/exception.utils';
-import { Request, Response } from 'express';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -19,6 +21,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
       case 'http': {
         this.handleHttpContext(exception, host);
+        break;
+      }
+
+      case 'ws': {
+        this.handleWsContext(exception, host);
         break;
       }
 
@@ -53,5 +60,24 @@ export class AllExceptionsFilter implements ExceptionFilter {
     };
 
     httpAdapter.reply(response, responseBody, httpStatus);
+  }
+
+  private handleWsContext(exception: any, host: ArgumentsHost) {
+    const ctx = host.switchToWs();
+    const client: Socket = ctx.getClient();
+    
+    const { httpStatus, message, name } = parseException(exception);
+
+    const responseBody = {
+      success: false,
+      statusCode: httpStatus,
+      message: message,
+      error: {
+        name,
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    client.emit('exception', responseBody);
   }
 }
