@@ -53,4 +53,7 @@ export class EnvironmentVariables {
 
   @IsString()
   OAUTH_GOOGLE_CLIENT_ID: string;
+
+  @IsString()
+  PUBLIC_API_KEY: string;
 }
