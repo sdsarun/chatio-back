@@ -56,4 +56,7 @@ export class EnvironmentVariables {
 
   @IsString()
   PUBLIC_API_KEY: string;
+
+  @IsString()
+  REDIS_URI: string;
 }

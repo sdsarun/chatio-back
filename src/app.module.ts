@@ -16,6 +16,7 @@ import { ApplyRequestIdMiddleware } from './common/middlewares/apply-request-id.
 import { DatabaseModule } from './database/database.module';
 import { GraphQLModule } from './services/graphql/graphql.module';
 import { HttpModule } from '@nestjs/axios';
+import { CacheManagerModule } from './services/cache-manager/cache-manager.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { HttpModule } from '@nestjs/axios';
     ConfigurationModule,
     LoggerModule,
     DatabaseModule,
+    CacheManagerModule,
     GraphQLModule,
   ],
   controllers: [AppController],
