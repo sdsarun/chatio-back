@@ -1,33 +1,29 @@
-import { CanActivate, ExecutionContext, ForbiddenException, HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlContextType, GqlExecutionContext } from '@nestjs/graphql';
+import { WsException } from '@nestjs/websockets';
 import { Request } from 'express';
+import { Socket } from 'socket.io';
 import { Logger } from '../../logger/logger.service';
 import { UserRole } from '../master/master.constants';
-import { UserService } from '../user/user.service';
+import { AuthService } from './auth.service';
 import { AUTH_PUBLIC_KEY } from './decorators/public.decorator';
 import { AUTH_ROLES_KEY } from './decorators/roles.decorator';
-import { TokenService } from './token.service';
-import { VerifiedAccessTokenPayload } from './types/token-payload.types';
-import { Socket } from 'socket.io';
 import { SocketAuthPayload } from './types/socket-io.types';
-import { WsException } from '@nestjs/websockets';
-import { User } from '../graphql/models/user.model';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly logger: Logger,
-    private readonly tokenService: TokenService,
-    private readonly userService: UserService,
     private readonly reflector: Reflector,
+    private readonly authService: AuthService,
   ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     this.logger.setContext(AuthGuard.name);
 
     const type = context.getType<GqlContextType>();
-    const { success, error, user } = await this.verifyUserCredentials(this.getAuthMetadataFromContext(context));
+    const { success, error, user } = await this.authService.authorize(this.getAuthMetadataFromContext(context));
     if (!success) {
       if (type === "ws") throw new WsException(error);
       throw error;
@@ -46,21 +42,25 @@ export class AuthGuard implements CanActivate {
     isPublic: boolean;
     accessToken: string | null;
     roles: UserRole[]
+    publicApiKey: string | null;
   } {
     const type = context.getType<GqlContextType>();
 
     let accessToken: string | null = null
+    let publicApiKey: string | null = null;
     try {
       switch (type) {
         case "graphql": {
           const ctx = GqlExecutionContext.create(context);
           const req = ctx.getContext().req as Request;
           accessToken = this.extractBearerToken(req.headers?.authorization || "");
+          publicApiKey = (req.headers?.["public-api-key"] || "") as string
           break;
         }
         case "http": {
           const req = context.switchToHttp().getRequest<Request>();
           accessToken = this.extractBearerToken(req.headers?.authorization || "");
+          publicApiKey = (req.headers?.["public-api-key"] || "") as string
           break;
         }
         case "ws": {
@@ -83,77 +83,12 @@ export class AuthGuard implements CanActivate {
       return {
         roles,
         isPublic,
-        accessToken
+        accessToken,
+        publicApiKey
       }
     } catch (error) {
       this.logger.error(error);
       throw error;
-    }
-  }
-
-  private async verifyUserCredentials(payload: {
-    isPublic: boolean;
-    accessToken: string | null;
-    roles: UserRole[];
-  }): Promise<{ success: false; error: HttpException; user: null } | { success: true; error: null; user: User | null }> {
-    const { isPublic, accessToken, roles } = payload;
-
-    if (isPublic) {
-      return { success: true, error: null, user: null };
-    }
-
-    if (!accessToken) {
-      this.logger.warn('Authorization header missing or malformed. Expected format: Bearer <token>');
-      return {
-        success: false,
-        error: new UnauthorizedException('Missing or malformed access token. Please include a valid token in the Authorization header using the format: Bearer <token>.'),
-        user: null,
-      };
-    }
-
-    try {
-      const { userInfo: userInfoFromToken } = await this.tokenService.verifyAccessToken<VerifiedAccessTokenPayload>(accessToken);
-      this.logger.debug(`Token verified successfully for user ID: ${userInfoFromToken?.id || 'unknown'}`);
-
-      const userInfoFromDB = await this.userService.getUser({ userId: userInfoFromToken.id });
-
-      if (!userInfoFromDB) {
-        this.logger.warn(`User with ID ${userInfoFromToken.id} not found in the database.`);
-        return {
-          success: false,
-          error: new NotFoundException(`User with ID ${userInfoFromToken.id} does not exist.`),
-          user: null,
-        };
-      }
-
-      const userRole = userInfoFromDB.userRole?.name as UserRole;
-
-      if (!userRole) {
-        this.logger.warn(`User with ID ${userInfoFromDB.id} has no assigned role.`);
-        return {
-          success: false,
-          error: new ForbiddenException('Your account does not have a role assigned. Contact support.'),
-          user: null,
-        };
-      }
-
-      if (!roles.includes(userRole)) {
-        this.logger.warn(`User role "${userRole}" not allowed to access this resource.`);
-        return {
-          success: false,
-          error: new ForbiddenException(`Access denied. Your role "${userRole}" does not have permission to access this resource.`),
-          user: null,
-        };
-      }
-
-      return { success: true, error: null, user: userInfoFromDB };
-    } catch (error) {
-      this.logger.error(error);
-      return {
-        success: false,
-        error: new UnauthorizedException('Invalid or expired access token. Please log in again.'),
-        user: null,
-      };
     }
   }
 

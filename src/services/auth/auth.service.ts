@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { ConfigurationService } from '../../configuration/configuration.service';
 import { Logger } from '../../logger/logger.service';
@@ -12,7 +12,8 @@ import { TokenService } from './token.service';
 import { GoogleIdTokenPayload } from './types/google.types';
 import { isAxiosError } from 'axios';
 import { VerifyGoogleIDTokenError } from '../../common/exceptions/google-oauth.exception';
-import { AccessTokenPayload } from './types/token-payload.types';
+import { AccessTokenPayload, VerifiedAccessTokenPayload } from './types/token-payload.types';
+import { User } from '../graphql/models/user.model';
 
 @Injectable()
 export class AuthService {
@@ -116,6 +117,92 @@ export class AuthService {
     } catch (error) {
       this.logger.error(error);
       throw error;
+    }
+  }
+
+  async authorize(
+    payload: {
+      isPublic: boolean;
+      accessToken: string | null;
+      roles: UserRole[];
+      publicApiKey?: string | null;
+    },
+    options?: {
+      skipCheckPublicApiKey?: boolean;
+    }
+  ): Promise<{ success: false; error: HttpException; user: null } | { success: true; error: null; user: User | null }> {
+    this.logger.setContext(this.authorize.name)
+
+    const { isPublic, accessToken, roles, publicApiKey = "" } = payload;
+
+    if (isPublic) {
+      if (options?.skipCheckPublicApiKey) {
+        return { success: true, error: null, user: null };
+      }
+
+      if (this.configurationService.authConfig.publicApiKey !== publicApiKey) {
+        return {
+          success: false,
+          error: new UnauthorizedException("Invalid public api key."),
+          user: null,
+        }
+      }
+
+      return { success: true, error: null, user: null };
+    }
+
+    if (!accessToken) {
+      this.logger.warn('Authorization header missing or malformed. Expected format: Bearer <token>');
+      return {
+        success: false,
+        error: new UnauthorizedException('Missing or malformed access token. Please include a valid token in the Authorization header using the format: Bearer <token>.'),
+        user: null,
+      };
+    }
+
+    try {
+      const { userInfo: userInfoFromToken } = await this.tokenService.verifyAccessToken<VerifiedAccessTokenPayload>(accessToken);
+      this.logger.debug(`Token verified successfully for user ID: ${userInfoFromToken?.id || 'unknown'}`);
+
+      const userInfoFromDB = await this.userService.getUser({ userId: userInfoFromToken.id });
+
+      if (!userInfoFromDB) {
+        this.logger.warn(`User with ID ${userInfoFromToken.id} not found in the database.`);
+        return {
+          success: false,
+          error: new NotFoundException(`User with ID ${userInfoFromToken.id} does not exist.`),
+          user: null,
+        };
+      }
+
+      const userRole = userInfoFromDB.userRole?.name as UserRole;
+
+      if (!userRole) {
+        this.logger.warn(`User with ID ${userInfoFromDB.id} has no assigned role.`);
+        return {
+          success: false,
+          error: new ForbiddenException('Your account does not have a role assigned. Contact support.'),
+          user: null,
+        };
+      }
+
+      if (!roles.includes(userRole)) {
+        this.logger.warn(`User role "${userRole}" not allowed to access this resource.`);
+        return {
+          success: false,
+          error: new ForbiddenException(`Access denied. Your role "${userRole}" does not have permission to access this resource.`),
+          user: null,
+        };
+      }
+
+      return { success: true, error: null, user: userInfoFromDB };
+    } catch (error) {
+      this.logger.error(error);
+      return {
+        success: false,
+        error: new UnauthorizedException('Invalid or expired access token. Please log in again.'),
+        user: null,
+      };
     }
   }
 }
