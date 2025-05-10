@@ -138,4 +138,12 @@ export class ConfigurationService {
       publicApiKey: this.config.get("PUBLIC_API_KEY")!,
     }
   }
+
+  get cacheConfig(): {
+    redisURI: string;
+  } {
+    return {
+      redisURI: this.config.get("REDIS_URI")!,
+    }
+  }
 }

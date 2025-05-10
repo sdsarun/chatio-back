@@ -15,6 +15,7 @@ import { UserModule } from './services/user/user.module';
 import { HttpModule } from '@nestjs/axios';
 import { AuthModule } from './services/auth/auth.module';
 import { AuthGuard } from './services/auth/auth.guard';
+import { CacheManagerModule } from './services/cache-manager/cache-manager.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AuthGuard } from './services/auth/auth.guard';
     ConfigurationModule,
     LoggerModule,
     DatabaseModule,
+    CacheManagerModule,
     GraphQLModule,
     MasterModule,
     UserModule,
