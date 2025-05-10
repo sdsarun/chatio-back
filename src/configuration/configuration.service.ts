@@ -130,4 +130,12 @@ export class ConfigurationService {
       clientId: this.config.get("OAUTH_GOOGLE_CLIENT_ID")!
     }
   }
+
+  get authConfig(): {
+    publicApiKey: string;
+  } {
+    return {
+      publicApiKey: this.config.get("PUBLIC_API_KEY")!,
+    }
+  }
 }
