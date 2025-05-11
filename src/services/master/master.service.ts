@@ -11,6 +11,8 @@ import { FindUserRoleByNameDTO } from './dto/find-user-role-by-name.dto';
 import { FindUserRoleByIdDTO } from './dto/find-user-role-by-id.dto';
 import { FindUserGenderByIdDTO } from './dto/find-user-gender-by-id.dto';
 import { UserGender } from '../graphql/models/user-gender.model';
+import { FindConversationTypeByNameDTO } from './dto/find-conversation-type-by-name.dto';
+import { FindConversationTypeByIdDTO } from './dto/find-conversation-type-by-id.dto';
 
 @Injectable()
 export class MasterService {
@@ -19,7 +21,7 @@ export class MasterService {
     private readonly userRole: typeof MasterUserRole,
 
     @InjectModel(MasterConversationType)
-    private readonly ConversationType: typeof MasterConversationType,
+    private readonly conversationType: typeof MasterConversationType,
 
     @InjectModel(MasterUserGender)
     private readonly userGender: typeof MasterUserGender
@@ -33,8 +35,7 @@ export class MasterService {
       await validateDTO(payload, FindUserRoleByIdDTO);
     }
 
-    const userRole = await this.userRole.findByPk(payload.id, { raw: true });
-    return userRole;
+    return this.userRole.findByPk(payload.id, { raw: true });
   }
 
   async findUserRoleByName(
@@ -61,8 +62,7 @@ export class MasterService {
       await validateDTO(payload, FindUserGenderByIdDTO);
     }
 
-    const userGender = await this.userGender.findByPk(payload.id, { raw: true });
-    return userGender;
+    return this.userGender.findByPk(payload.id, { raw: true });
   }
 
   async findUserGenderByName(
@@ -79,5 +79,28 @@ export class MasterService {
       },
       raw: true
     })
+  }
+
+  async findConservationTypeByName(
+    payload: FindConversationTypeByNameDTO,
+    options?: ServiceActionOptions
+  ) {
+    if (options?.validateDTO) {
+      await validateDTO(payload, FindConversationTypeByNameDTO);
+    }
+    return this.conversationType.findOne({
+      where: { name: payload.name },
+      raw: true
+    });
+  }
+
+  async findConservationTypeById(
+    payload: FindConversationTypeByIdDTO,
+    options?: ServiceActionOptions
+  ) {
+    if (options?.validateDTO) {
+      await validateDTO(payload, FindConversationTypeByIdDTO);
+    }
+    return this.conversationType.findByPk(payload.id, { raw: true });
   }
 }
