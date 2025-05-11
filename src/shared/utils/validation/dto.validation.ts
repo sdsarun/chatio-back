@@ -11,10 +11,6 @@ export async function validateDTO<T extends object>(
   const errors: ValidationError[] = await validate(ensurePlainToInstanceDTO, { whitelist: true });
 
   if (errors.length > 0) {
-    if (typeof options?.onValidateDTOFailed === 'function') {
-      options?.onValidateDTOFailed(errors);
-    }
-
     const throwErrorOnValidateFailed: boolean = options?.throwErrorOnValidateFailed ?? true;
     if (throwErrorOnValidateFailed) {
       throw new Error(errors.toString());
