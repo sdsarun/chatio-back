@@ -29,6 +29,7 @@ export class UserBlockedUser extends Model<
   @Column({
     type: DataType.UUID,
     field: 'user_id',
+    onDelete: 'SET NULL',
   })
   userId!: string;
 
@@ -36,6 +37,7 @@ export class UserBlockedUser extends Model<
   @Column({
     type: DataType.UUID,
     field: 'blocked_user_id',
+    onDelete: 'SET NULL',
   })
   blockedUserId!: string;
 

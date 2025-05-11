@@ -8,7 +8,8 @@ module.exports = {
       VALUES
         ('DIRECT_MESSAGE'),
         ('PRIVATE_GROUP_MESSAGE'),
-        ('PUBLIC_GROUP_MESSAGE')
+        ('PUBLIC_GROUP_MESSAGE'),
+        ('STRANGER_MESSAGE')
       ON CONFLICT ("name") DO NOTHING;
     `);
   },
@@ -16,7 +17,12 @@ module.exports = {
   async down (queryInterface, Sequelize) {
     await queryInterface.sequelize.query(`
       DELETE FROM master_conversation_types
-      WHERE "name" IN ('DIRECT_MESSAGE', 'PRIVATE_GROUP_MESSAGE', 'PUBLIC_GROUP_MESSAGE');
+      WHERE "name" IN (
+        'DIRECT_MESSAGE',
+        'PRIVATE_GROUP_MESSAGE', 
+        'PUBLIC_GROUP_MESSAGE',
+        'STRANGER_MESSAGE'
+      );
     `);
   }
 };
