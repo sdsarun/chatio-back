@@ -16,6 +16,7 @@ import { HttpModule } from '@nestjs/axios';
 import { AuthModule } from './services/auth/auth.module';
 import { AuthGuard } from './services/auth/auth.guard';
 import { CacheManagerModule } from './services/cache-manager/cache-manager.module';
+import { ChatModule } from './services/chat/chat.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CacheManagerModule } from './services/cache-manager/cache-manager.modul
     MasterModule,
     UserModule,
     AuthModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [

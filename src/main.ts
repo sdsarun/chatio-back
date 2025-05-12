@@ -6,12 +6,15 @@ import { ConfigurationService } from './configuration/configuration.service';
 import { Logger } from './logger/logger.service';
 import helmet from 'helmet';
 import * as cookieParser from 'cookie-parser';
+import { SocketIOExtendedAdapter } from './common/adapters/socket-io-extended.adapter';
+import { AuthService } from './services/auth/auth.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
   const logger = app.get(Logger);
   const configurationService = app.get(ConfigurationService);
+  const authService = app.get(AuthService);
 
   app.use(cookieParser());
 
@@ -40,9 +43,8 @@ async function bootstrap() {
   app.enableCors(configurationService.corsConfig);
   app.enableVersioning(configurationService.versioningConfig);
 
-  app.useGlobalPipes(
-    new ValidationPipe(configurationService.validationPipeConfig),
-  );
+  app.useGlobalPipes(new ValidationPipe(configurationService.validationPipeConfig));
+  app.useWebSocketAdapter(new SocketIOExtendedAdapter({ app, configurationService, authService, logger }));
 
   if (configurationService.isDevelopment) {
     const config = new DocumentBuilder()
@@ -64,10 +66,7 @@ async function bootstrap() {
     logger.log(`Application running on ${url}`);
   };
 
-  await app.listen(
-    configurationService.appConfig.port,
-    () => void listenCallback(),
-  );
+  await app.listen(configurationService.appConfig.port, () => void listenCallback());
 }
 
 bootstrap();
