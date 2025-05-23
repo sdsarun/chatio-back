@@ -77,5 +77,5 @@ export class Message extends Model<Message, MessageCreation> {
   conversation!: Conversation;
 
   @HasMany(() => MessageRead)
-  messageRead!: MessageRead[]
+  messageReads!: MessageRead[]
 }
