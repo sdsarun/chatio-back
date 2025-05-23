@@ -14,6 +14,8 @@ import { Logger } from '../../logger/logger.service';
 import { ChatService } from './chat.service';
 import { ChatEvent } from './constants/chat-events.constant';
 import { LeftConversationDTO } from './dto/left-conversation.dto';
+import { GetMessagesDTO } from './dto/get-messages.dto';
+import { SendMessageDTO } from './dto/send-message.dto';
 
 @UseFilters(AllExceptionsFilter)
 @WebSocketGateway()
@@ -67,6 +69,41 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.server
         .to(userConnections[userId].clientId)
         .emit(ChatEvent.SkipStranger, record);
+    }
+  }
+
+  @SubscribeMessage(ChatEvent.GetMessages)
+  handleGetMessages(
+    @MessageBody() message: GetMessagesDTO,
+  ) {
+    return this.chatService.getMessages(message);
+  }
+
+  @SubscribeMessage(ChatEvent.SendMessage)
+  async handleSendMessage(
+    @MessageBody() message: SendMessageDTO,
+  ) {
+    const userConnections = await this.chatService.getUserConnections() || {};
+
+    const messageSended = await this.chatService.sendMessage(message);
+    const { participants = [] } = await this.chatService.findActiveStrangerConversationByUserId({ userId: messageSended.senderId! }) || {};
+
+    const newMessagePayload: GetMessagesDTO = {
+      conversationId: messageSended.conversationId!,
+      messageId: messageSended.id,
+    }
+
+    const newMessages = await this.chatService.getMessages(newMessagePayload);
+
+    for (const participant of participants) {
+      if (participant.userId !== messageSended.senderId) {
+        const clientId = userConnections[participant.userId]?.clientId;
+        if (clientId) {
+          this.server
+            .to(clientId)
+            .emit(ChatEvent.GetMessages, newMessages);
+        }
+      }
     }
   }
 }

@@ -7,12 +7,16 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Conversation } from '../../database/models/conversation.model';
 import { ConversationParticipant } from '../../database/models/conversation-participant.model';
 import { MasterModule } from '../master/master.module';
+import { Message } from '../../database/models/message.model';
+import { MessageRead } from '../../database/models/message-read.model';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([
       Conversation,
       ConversationParticipant,
+      Message,
+      MessageRead,
     ]),
     AuthModule,
     UserModule,

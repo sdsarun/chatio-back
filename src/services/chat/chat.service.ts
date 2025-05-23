@@ -31,6 +31,10 @@ import { JoinConversationDTO } from "./dto/join-conversation.dto";
 import { CreateConversationDTO } from "./dto/create-conversation.dto";
 import { FindActiveStrangerConversationByUserIdDTO } from "./dto/find-active-stranger-conversation-by-user-id.dto";
 import { ChatCacheKey } from "./constants/chat-cache-key.constant";
+import { Message } from "../../database/models/message.model";
+import { GetMessagesDTO } from "./dto/get-messages.dto";
+import { SendMessageDTO } from "./dto/send-message.dto";
+import { MessageRead } from "../../database/models/message-read.model";
 
 @Injectable()
 export class ChatService {
@@ -40,6 +44,8 @@ export class ChatService {
     @InjectModel(ConversationParticipant) private readonly conversationParticipant: typeof ConversationParticipant,
     @InjectModel(MasterConversationType) private readonly conversationType: typeof MasterConversationType,
     @InjectModel(UserModel) private readonly user: typeof UserModel,
+    @InjectModel(Message) private readonly message: typeof Message,
+    @InjectModel(MessageRead) private readonly messageRead: typeof MessageRead,
 
     private readonly logger: Logger,
     private readonly userService: UserService,
@@ -297,5 +303,61 @@ export class ChatService {
       conversation: conversation!,
       participants
     }
+  }
+
+  async getMessages(
+    payload: GetMessagesDTO,
+    options?: TransactionalServiceActionOptions,
+  ): Promise<Message[]> {
+    if (options?.validateDTO) {
+      await validateDTO(payload, GetMessagesDTO)
+    }
+
+    const { 
+      messageId,
+      requesterId, 
+      conversationId, 
+      offset,
+      limit,
+    } = payload;
+
+    const whereMessage: WhereOptions<Message> = {
+      conversationId,
+    }
+
+    if (messageId) {
+      whereMessage.id = messageId;
+    }
+
+    if (requesterId) {
+      whereMessage.senderId = requesterId;
+    }
+
+    return this.message.findAll({
+      where: whereMessage,
+      include: {
+        all: true,
+        nested: true,
+      },
+      nest: true,
+      transaction: options?.transaction,
+      order: [["sent_at", "DESC"]],
+      offset,
+      limit,
+    });
+  }
+
+  async sendMessage(
+    payload: SendMessageDTO,
+    options?: TransactionalServiceActionOptions,
+  ): Promise<Message> {
+    if (options?.validateDTO) {
+      await validateDTO(payload, SendMessageDTO)
+    }
+
+    return this.message.create(payload, {
+      raw: true,
+      transaction: options?.transaction,
+    });
   }
 }
