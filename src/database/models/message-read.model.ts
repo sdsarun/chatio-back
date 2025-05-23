@@ -1,4 +1,5 @@
 import {
+  BelongsTo,
   Column,
   DataType,
   Default,
@@ -39,4 +40,10 @@ export class MessageRead extends Model<MessageRead, MessageReadCreation> {
 
   @Column({ field: 'read_at', type: DataType.DATE })
   readAt!: Date | null;
+
+  @BelongsTo(() => Message)
+  message!: Message;
+
+  @BelongsTo(() => User)
+  user!: User;
 }
