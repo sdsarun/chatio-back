@@ -5,12 +5,14 @@ import {
   DataType,
   DeletedAt,
   ForeignKey,
+  HasMany,
   Model,
   Table,
   UpdatedAt,
 } from 'sequelize-typescript';
 import { Conversation } from './conversation.model';
 import { User } from './user.model';
+import { MessageRead } from './message-read.model';
 
 export type MessageCreation = Partial<
   Pick<
@@ -73,4 +75,7 @@ export class Message extends Model<Message, MessageCreation> {
 
   @BelongsTo(() => Conversation)
   conversation!: Conversation;
+
+  @HasMany(() => MessageRead)
+  messageRead!: MessageRead[]
 }
