@@ -1,6 +1,6 @@
 {
   "name": "nest-app",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "author": "",
   "private": true,
@@ -26,7 +26,11 @@
     "db:s:dev": "sequelize db:seed --env development --seed",
     "db:ms:dev": "sequelize db:seed:all --env development",
     "db:ums": "sequelize db:seed:undo:all --env development",
-    "db:reset": "sequelize db:migrate:undo:all && sequelize db:migrate && sequelize db:seed:all"
+    "db:reset": "sequelize db:migrate:undo:all && sequelize db:migrate && sequelize db:seed:all",
+    "release": "npx standard-version",
+    "release:patch": "npx standard-version --release-as patch",
+    "release:minor": "npx standard-version --release-as minor",
+    "release:major": "npx standard-version --release-as major"
   },
   "dependencies": {
     "@apollo/server": "^4.11.3",
