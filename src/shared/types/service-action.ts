@@ -1,7 +1,10 @@
-import { ValidationError } from 'class-validator';
+import { Transaction } from "sequelize";
 
 export type ServiceActionOptions = {
   validateDTO?: boolean;
   throwErrorOnValidateFailed?: boolean;
-  onValidateDTOFailed?: (errors: ValidationError[]) => void;
 };
+
+export type TransactionalServiceActionOptions = ServiceActionOptions & {
+  transaction?: Transaction;
+}

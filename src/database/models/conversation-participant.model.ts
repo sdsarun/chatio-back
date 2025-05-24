@@ -11,11 +11,17 @@ import { Conversation } from './conversation.model';
 import { User } from './user.model';
 
 export type ConversationParticipantCreation = Partial<
-  Pick<ConversationParticipant, 'id' | 'conversationId' | 'userId' | "joinedAt" | "leftAt">
+  Pick<
+    ConversationParticipant,
+    'id' | 'conversationId' | 'userId' | 'joinedAt' | 'leftAt'
+  >
 >;
 
-@Table({ tableName: 'conversation_participants' })
-export class ConversationParticipant extends Model<ConversationParticipant, ConversationParticipantCreation> {
+@Table({ tableName: 'conversation_participants', updatedAt: false, paranoid: false })
+export class ConversationParticipant extends Model<
+  ConversationParticipant,
+  ConversationParticipantCreation
+> {
   @Column({
     type: DataType.UUID,
     primaryKey: true,

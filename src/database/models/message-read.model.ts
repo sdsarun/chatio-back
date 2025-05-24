@@ -1,11 +1,12 @@
 import {
+  BelongsTo,
   Column,
   DataType,
   Default,
   ForeignKey,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from 'sequelize-typescript';
 import { Message } from './message.model';
 import { User } from './user.model';
@@ -14,7 +15,7 @@ export type MessageReadCreation = Partial<
   Pick<MessageRead, 'id' | 'messageId' | 'userId' | 'readAt'>
 >;
 
-@Table({ tableName: 'message_reads' })
+@Table({ tableName: 'message_reads', timestamps: false, paranoid: false })
 export class MessageRead extends Model<MessageRead, MessageReadCreation> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
@@ -39,4 +40,10 @@ export class MessageRead extends Model<MessageRead, MessageReadCreation> {
 
   @Column({ field: 'read_at', type: DataType.DATE })
   readAt!: Date | null;
+
+  @BelongsTo(() => Message)
+  message!: Message;
+
+  @BelongsTo(() => User)
+  user!: User;
 }
