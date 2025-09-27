@@ -95,11 +95,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const newMessages = await this.chatService.getMessages(newMessagePayload);
 
     for (const participant of participants) {
-      if (participant.userId !== messageSended.senderId) {
-        const clientId = userConnections[participant.userId]?.clientId;
-        if (clientId) {
-          this.server.to(clientId).emit(ChatEvent.GetMessages, newMessages);
-        }
+      const clientId = userConnections[participant.userId]?.clientId;
+      if (clientId) {
+        this.server.to(clientId).emit(ChatEvent.GetMessages, newMessages);
       }
     }
   }
