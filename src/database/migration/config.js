@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+/* eslint-disable @typescript-eslint/no-require-imports */
 require('dotenv').config();
 
 const config = {
@@ -11,8 +11,8 @@ const config = {
     database: process.env.DB_DATABASE,
     schema: process.env.DB_SCHEMA,
     dialectOptions: {
-      ssl: process.env.DB_SSL === 'true',
-    },
+      ssl: process.env.DB_SSL === 'true'
+    }
   },
   development: {
     dialect: process.env.DB_DIALECT,
@@ -23,8 +23,8 @@ const config = {
     database: process.env.DB_DATABASE,
     schema: process.env.DB_SCHEMA,
     dialectOptions: {
-      ssl: process.env.DB_SSL === 'true',
-    },
+      ssl: process.env.DB_SSL === 'true'
+    }
   },
   test: {
     dialect: process.env.DB_DIALECT,
@@ -35,9 +35,9 @@ const config = {
     database: process.env.DB_DATABASE,
     schema: process.env.DB_SCHEMA,
     dialectOptions: {
-      ssl: process.env.DB_SSL === 'true',
-    },
-  },
+      ssl: process.env.DB_SSL === 'true'
+    }
+  }
 };
 
 module.exports = config;
