@@ -1,10 +1,4 @@
-import {
-  CallHandler,
-  ContextType,
-  ExecutionContext,
-  Injectable,
-  NestInterceptor,
-} from '@nestjs/common';
+import { CallHandler, ContextType, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Response } from 'express';
 import { map, Observable } from 'rxjs';
 import { SkipFormatResponseInterceptorPropertyName } from '../decorators/skip-format-interceptor.decorator';
@@ -15,8 +9,7 @@ export class FormatResponseInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
-    const isSkip =
-      context.getHandler()[SkipFormatResponseInterceptorPropertyName];
+    const isSkip = context.getHandler()[SkipFormatResponseInterceptorPropertyName];
     if (isSkip) {
       return next.handle();
     }
@@ -36,10 +29,7 @@ export class FormatResponseInterceptor implements NestInterceptor {
     }
   }
 
-  private formatHttpResponse(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<any> {
+  private formatHttpResponse(context: ExecutionContext, next: CallHandler): Observable<any> {
     const response = context.switchToHttp().getResponse<Response>();
 
     return next.handle().pipe(
@@ -56,10 +46,7 @@ export class FormatResponseInterceptor implements NestInterceptor {
     );
   }
 
-  private formatGraphQLResponse(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<any> {
+  private formatGraphQLResponse(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle();
   }
 }

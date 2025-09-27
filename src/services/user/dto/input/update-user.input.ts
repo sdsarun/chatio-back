@@ -27,7 +27,4 @@ export class UpdateUserInput {
 }
 
 @InputType()
-export class UpdateUserProfileInput extends PickType(UpdateUserInput, [
-  'aka',
-  'gender',
-]) {}
+export class UpdateUserProfileInput extends PickType(UpdateUserInput, ['aka', 'gender']) {}

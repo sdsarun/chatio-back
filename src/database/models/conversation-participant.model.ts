@@ -1,20 +1,9 @@
-import {
-  BelongsTo,
-  Column,
-  CreatedAt,
-  DataType,
-  ForeignKey,
-  Model,
-  Table,
-} from 'sequelize-typescript';
+import { BelongsTo, Column, CreatedAt, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { Conversation } from './conversation.model';
 import { User } from './user.model';
 
 export type ConversationParticipantCreation = Partial<
-  Pick<
-    ConversationParticipant,
-    'id' | 'conversationId' | 'userId' | 'joinedAt' | 'leftAt'
-  >
+  Pick<ConversationParticipant, 'id' | 'conversationId' | 'userId' | 'joinedAt' | 'leftAt'>
 >;
 
 @Table({

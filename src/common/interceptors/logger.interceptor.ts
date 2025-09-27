@@ -1,17 +1,8 @@
-import {
-  CallHandler,
-  ContextType,
-  ExecutionContext,
-  Injectable,
-  NestInterceptor,
-} from '@nestjs/common';
+import { CallHandler, ContextType, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Request } from 'express';
 import { catchError, Observable, tap, throwError } from 'rxjs';
-import {
-  getExceptionHttpStatus,
-  getExceptionMessage,
-} from '../../shared/utils/exception.utils';
+import { getExceptionHttpStatus, getExceptionMessage } from '../../shared/utils/exception.utils';
 import { Logger } from '../../logger/logger.service';
 
 @Injectable()
@@ -37,10 +28,7 @@ export class LoggerInterceptor implements NestInterceptor {
     }
   }
 
-  private handleGraphQLContext(
-    context: ExecutionContext,
-    next: CallHandler<any>,
-  ): Observable<any> {
+  private handleGraphQLContext(context: ExecutionContext, next: CallHandler<any>): Observable<any> {
     const gqlContext = GqlExecutionContext.create(context);
     const { req: request } = gqlContext.getContext();
     const requestId = request?._requestId;
@@ -84,10 +72,7 @@ export class LoggerInterceptor implements NestInterceptor {
     );
   }
 
-  private handleHttpContext(
-    context: ExecutionContext,
-    next: CallHandler<any>,
-  ): Observable<any> {
+  private handleHttpContext(context: ExecutionContext, next: CallHandler<any>): Observable<any> {
     const request = context.switchToHttp().getRequest<Request>();
 
     if (!request) {

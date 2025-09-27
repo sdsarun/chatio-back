@@ -23,16 +23,9 @@ async function bootstrap() {
       crossOriginEmbedderPolicy: false,
       contentSecurityPolicy: {
         directives: {
-          imgSrc: [
-            `'self'`,
-            'data:',
-            'apollo-server-landing-page.cdn.apollographql.com',
-          ],
+          imgSrc: [`'self'`, 'data:', 'apollo-server-landing-page.cdn.apollographql.com'],
           scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
-          manifestSrc: [
-            `'self'`,
-            'apollo-server-landing-page.cdn.apollographql.com',
-          ],
+          manifestSrc: [`'self'`, 'apollo-server-landing-page.cdn.apollographql.com'],
           frameSrc: [`'self'`, 'sandbox.embed.apollographql.com'],
         },
       },
@@ -43,9 +36,7 @@ async function bootstrap() {
   app.enableCors(configurationService.corsConfig);
   app.enableVersioning(configurationService.versioningConfig);
 
-  app.useGlobalPipes(
-    new ValidationPipe(configurationService.validationPipeConfig),
-  );
+  app.useGlobalPipes(new ValidationPipe(configurationService.validationPipeConfig));
   app.useWebSocketAdapter(
     new SocketIOExtendedAdapter({
       app,
@@ -63,11 +54,7 @@ async function bootstrap() {
       .addBearerAuth()
       .build();
     const documentFactory = () => SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup(
-      configurationService.swaggerConfig.endpointName,
-      app,
-      documentFactory,
-    );
+    SwaggerModule.setup(configurationService.swaggerConfig.endpointName, app, documentFactory);
   }
 
   const listenCallback = async () => {
@@ -75,10 +62,7 @@ async function bootstrap() {
     logger.log(`Application running on ${url}`);
   };
 
-  await app.listen(
-    configurationService.appConfig.port,
-    () => void listenCallback(),
-  );
+  await app.listen(configurationService.appConfig.port, () => void listenCallback());
 }
 
 bootstrap();

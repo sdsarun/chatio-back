@@ -21,10 +21,7 @@ import { ApolloServerPlugin } from '@apollo/server';
         return {
           plugins,
           playground: false,
-          autoSchemaFile: join(
-            process.cwd(),
-            'src/services/graphql/schema.gql',
-          ),
+          autoSchemaFile: join(process.cwd(), 'src/services/graphql/schema.gql'),
         };
       },
     }),

@@ -18,10 +18,7 @@ import { TokenService } from './token.service';
 import { GoogleIdTokenPayload } from './types/google.types';
 import { isAxiosError } from 'axios';
 import { VerifyGoogleIDTokenError } from '../../common/exceptions/google-oauth.exception';
-import {
-  AccessTokenPayload,
-  VerifiedAccessTokenPayload,
-} from './types/token-payload.types';
+import { AccessTokenPayload, VerifiedAccessTokenPayload } from './types/token-payload.types';
 import { User } from '../graphql/models/user.model';
 
 @Injectable()
@@ -65,8 +62,7 @@ export class AuthService {
         userInfo,
       };
 
-      const accessToken =
-        await this.tokenService.generateAccessToken(tokenPayload);
+      const accessToken = await this.tokenService.generateAccessToken(tokenPayload);
       const { exp: accessTokenExpInMS } = this.tokenService.decode(accessToken);
 
       return {
@@ -97,8 +93,7 @@ export class AuthService {
         userInfo,
       };
 
-      const accessToken =
-        await this.tokenService.generateAccessToken(tokenPayload);
+      const accessToken = await this.tokenService.generateAccessToken(tokenPayload);
       const { exp: accessTokenExpInMS } = this.tokenService.decode(accessToken);
 
       return {
@@ -111,29 +106,19 @@ export class AuthService {
     }
   }
 
-  private async verifyGoogleIDToken({
-    idToken,
-  }: GoogleSignInDTO): Promise<GoogleIdTokenPayload> {
+  private async verifyGoogleIDToken({ idToken }: GoogleSignInDTO): Promise<GoogleIdTokenPayload> {
     this.logger.setContext(this.googleSignIn.name);
     try {
       const { data } = await firstValueFrom(
-        this.http.get<GoogleIdTokenPayload>(
-          'https://oauth2.googleapis.com/tokeninfo',
-          {
-            params: { id_token: idToken },
-          },
-        ),
+        this.http.get<GoogleIdTokenPayload>('https://oauth2.googleapis.com/tokeninfo', {
+          params: { id_token: idToken },
+        }),
       );
 
-      const validIssuers = [
-        'accounts.google.com',
-        'https://accounts.google.com',
-      ];
+      const validIssuers = ['accounts.google.com', 'https://accounts.google.com'];
 
       if (!validIssuers.includes(data.iss)) {
-        throw new Error(
-          `Invalid issuer: expected one of ${validIssuers.join(', ')}, got "${data.iss}"`,
-        );
+        throw new Error(`Invalid issuer: expected one of ${validIssuers.join(', ')}, got "${data.iss}"`);
       }
 
       if (data.aud !== this.configurationService.oauthGoogleConfig.clientId) {
@@ -184,9 +169,7 @@ export class AuthService {
     }
 
     if (!accessToken) {
-      this.logger.warn(
-        'Authorization header missing or malformed. Expected format: Bearer <token>',
-      );
+      this.logger.warn('Authorization header missing or malformed. Expected format: Bearer <token>');
       return {
         success: false,
         error: new UnauthorizedException(
@@ -198,9 +181,7 @@ export class AuthService {
 
     try {
       const { userInfo: userInfoFromToken } =
-        await this.tokenService.verifyAccessToken<VerifiedAccessTokenPayload>(
-          accessToken,
-        );
+        await this.tokenService.verifyAccessToken<VerifiedAccessTokenPayload>(accessToken);
       this.logger.debug(
         `Token verified successfully for user ID: ${userInfoFromToken?.id || 'unknown'}`,
       );
@@ -210,14 +191,10 @@ export class AuthService {
       });
 
       if (!userInfoFromDB) {
-        this.logger.warn(
-          `User with ID ${userInfoFromToken.id} not found in the database.`,
-        );
+        this.logger.warn(`User with ID ${userInfoFromToken.id} not found in the database.`);
         return {
           success: false,
-          error: new NotFoundException(
-            `User with ID ${userInfoFromToken.id} does not exist.`,
-          ),
+          error: new NotFoundException(`User with ID ${userInfoFromToken.id} does not exist.`),
           user: null,
         };
       }
@@ -225,22 +202,16 @@ export class AuthService {
       const userRole = userInfoFromDB.userRole?.name as UserRole;
 
       if (!userRole) {
-        this.logger.warn(
-          `User with ID ${userInfoFromDB.id} has no assigned role.`,
-        );
+        this.logger.warn(`User with ID ${userInfoFromDB.id} has no assigned role.`);
         return {
           success: false,
-          error: new ForbiddenException(
-            'Your account does not have a role assigned. Contact support.',
-          ),
+          error: new ForbiddenException('Your account does not have a role assigned. Contact support.'),
           user: null,
         };
       }
 
       if (!roles.includes(userRole)) {
-        this.logger.warn(
-          `User role "${userRole}" not allowed to access this resource.`,
-        );
+        this.logger.warn(`User role "${userRole}" not allowed to access this resource.`);
         return {
           success: false,
           error: new ForbiddenException(
@@ -255,9 +226,7 @@ export class AuthService {
       this.logger.error(error);
       return {
         success: false,
-        error: new UnauthorizedException(
-          'Invalid or expired access token. Please log in again.',
-        ),
+        error: new UnauthorizedException('Invalid or expired access token. Please log in again.'),
         user: null,
       };
     }

@@ -11,9 +11,7 @@ import {
 import { Message } from './message.model';
 import { User } from './user.model';
 
-export type MessageReadCreation = Partial<
-  Pick<MessageRead, 'id' | 'messageId' | 'userId' | 'readAt'>
->;
+export type MessageReadCreation = Partial<Pick<MessageRead, 'id' | 'messageId' | 'userId' | 'readAt'>>;
 
 @Table({ tableName: 'message_reads', timestamps: false, paranoid: false })
 export class MessageRead extends Model<MessageRead, MessageReadCreation> {

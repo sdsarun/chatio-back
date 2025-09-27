@@ -1,9 +1,4 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ContextType,
-  ExceptionFilter,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ContextType, ExceptionFilter } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Request, Response } from 'express';
 import { Socket } from 'socket.io';

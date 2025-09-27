@@ -83,25 +83,14 @@ describe('UserService', () => {
       };
 
       (randomUniqueName as jest.Mock).mockReturnValue('mock-username-1234');
-      mockMasterService.findUserRoleByName?.mockResolvedValue(
-        mockUserRoleResolve,
-      );
-      mockMasterService.findUserGenderByName?.mockResolvedValue(
-        mockUserGenderResolve,
-      );
-      mockUserModel.upsert?.mockResolvedValue([
-        mockUserCreatedResolve as any,
-        true,
-      ]);
+      mockMasterService.findUserRoleByName?.mockResolvedValue(mockUserRoleResolve);
+      mockMasterService.findUserGenderByName?.mockResolvedValue(mockUserGenderResolve);
+      mockUserModel.upsert?.mockResolvedValue([mockUserCreatedResolve as any, true]);
 
-      const mockGetUserFn = jest
-        .spyOn(userService, 'getUser')
-        .mockResolvedValue(mockUserCreatedResolve);
+      const mockGetUserFn = jest.spyOn(userService, 'getUser').mockResolvedValue(mockUserCreatedResolve);
 
       // act
-      const userCreated = await userService.createUserIfNotExists(
-        testCreateUserPayload,
-      );
+      const userCreated = await userService.createUserIfNotExists(testCreateUserPayload);
 
       // assert
       expect(mockUserModel.upsert).toHaveBeenCalledWith(
@@ -147,25 +136,14 @@ describe('UserService', () => {
         aka: 'mock-aka-registered',
       };
 
-      mockMasterService.findUserRoleByName?.mockResolvedValue(
-        mockUserRoleResolve,
-      );
-      mockMasterService.findUserGenderByName?.mockResolvedValue(
-        mockUserGenderResolve,
-      );
-      mockUserModel.upsert?.mockResolvedValue([
-        mockUserCreatedResolve as any,
-        true,
-      ]);
+      mockMasterService.findUserRoleByName?.mockResolvedValue(mockUserRoleResolve);
+      mockMasterService.findUserGenderByName?.mockResolvedValue(mockUserGenderResolve);
+      mockUserModel.upsert?.mockResolvedValue([mockUserCreatedResolve as any, true]);
 
-      const mockGetUserFn = jest
-        .spyOn(userService, 'getUser')
-        .mockResolvedValue(mockUserCreatedResolve);
+      const mockGetUserFn = jest.spyOn(userService, 'getUser').mockResolvedValue(mockUserCreatedResolve);
 
       // act
-      const userCreated = await userService.createUserIfNotExists(
-        testCreateUserPayload,
-      );
+      const userCreated = await userService.createUserIfNotExists(testCreateUserPayload);
 
       // assert
       expect(mockUserModel.upsert).toHaveBeenCalledWith(
@@ -198,23 +176,14 @@ describe('UserService', () => {
         userRole: mockUserRoleResolve,
       };
 
-      mockMasterService.findUserRoleByName?.mockResolvedValue(
-        mockUserRoleResolve,
-      );
-      mockUserModel.upsert?.mockResolvedValue([
-        mockUserCreatedResolve as any,
-        true,
-      ]);
+      mockMasterService.findUserRoleByName?.mockResolvedValue(mockUserRoleResolve);
+      mockUserModel.upsert?.mockResolvedValue([mockUserCreatedResolve as any, true]);
 
-      jest
-        .spyOn(userService, 'getUser')
-        .mockResolvedValue(mockUserCreatedResolve);
+      jest.spyOn(userService, 'getUser').mockResolvedValue(mockUserCreatedResolve);
 
       // act
       // assert
-      expect(
-        userService.createUserIfNotExists({} as any, { validateDTO: true }),
-      ).rejects.toThrow(Error);
+      expect(userService.createUserIfNotExists({} as any, { validateDTO: true })).rejects.toThrow(Error);
       expect(
         userService.createUserIfNotExists({ role: '' } as any, {
           validateDTO: true,
@@ -225,9 +194,9 @@ describe('UserService', () => {
           validateDTO: true,
         }),
       ).rejects.toThrow(Error);
-      expect(
-        userService.createUserIfNotExists(null as any, { validateDTO: true }),
-      ).rejects.toThrow(Error);
+      expect(userService.createUserIfNotExists(null as any, { validateDTO: true })).rejects.toThrow(
+        Error,
+      );
     });
   });
 
@@ -299,15 +268,9 @@ describe('UserService', () => {
     });
 
     it('throw error when invalid payload', () => {
-      expect(userService.getUser({}, { validateDTO: true })).rejects.toThrow(
-        Error,
-      );
-      expect(
-        userService.getUser(undefined as any, { validateDTO: true }),
-      ).rejects.toThrow(Error);
-      expect(
-        userService.getUser(null as any, { validateDTO: true }),
-      ).rejects.toThrow(Error);
+      expect(userService.getUser({}, { validateDTO: true })).rejects.toThrow(Error);
+      expect(userService.getUser(undefined as any, { validateDTO: true })).rejects.toThrow(Error);
+      expect(userService.getUser(null as any, { validateDTO: true })).rejects.toThrow(Error);
     });
   });
 
@@ -334,14 +297,10 @@ describe('UserService', () => {
         userGender: mockUserGenderResolve,
       };
 
-      mockMasterService.findUserGenderByName?.mockResolvedValue(
-        mockUserGenderResolve,
-      );
+      mockMasterService.findUserGenderByName?.mockResolvedValue(mockUserGenderResolve);
       mockUserModel.update?.mockResolvedValue([1]); // mock update success
 
-      const mockGetUserFn = jest
-        .spyOn(userService, 'getUser')
-        .mockResolvedValue(mockUpdatedUser);
+      const mockGetUserFn = jest.spyOn(userService, 'getUser').mockResolvedValue(mockUpdatedUser);
 
       // act
       const result = await userService.updateUser(testPayload);
@@ -375,9 +334,7 @@ describe('UserService', () => {
         name: 'Male',
       };
 
-      mockMasterService.findUserGenderByName?.mockResolvedValue(
-        mockUserGenderResolve,
-      );
+      mockMasterService.findUserGenderByName?.mockResolvedValue(mockUserGenderResolve);
       mockUserModel.update?.mockResolvedValue([0]); // simulate no user updated
 
       // act
@@ -400,9 +357,7 @@ describe('UserService', () => {
       mockMasterService.findUserGenderByName?.mockResolvedValue(null); // no gender found
 
       // act / assert
-      await expect(userService.updateUser(testPayload)).rejects.toThrowError(
-        'Gender does not exists.',
-      );
+      await expect(userService.updateUser(testPayload)).rejects.toThrowError('Gender does not exists.');
     });
 
     it('should update user without gender if not provided', async () => {
@@ -422,9 +377,7 @@ describe('UserService', () => {
 
       mockUserModel.update?.mockResolvedValue([1]); // simulate successful update
 
-      const mockGetUserFn = jest
-        .spyOn(userService, 'getUser')
-        .mockResolvedValue(mockUpdatedUser);
+      const mockGetUserFn = jest.spyOn(userService, 'getUser').mockResolvedValue(mockUpdatedUser);
 
       // act
       const result = await userService.updateUser(testPayload);

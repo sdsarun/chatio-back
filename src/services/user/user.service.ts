@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { col, fn, Op, where, WhereOptions } from 'sequelize';
-import {
-  UserCreation,
-  User as UserModel,
-} from '../../database/models/user.model';
+import { UserCreation, User as UserModel } from '../../database/models/user.model';
 import { ServiceActionOptions } from '../../shared/types/service-action';
 import randomUniqueName from '../../shared/utils/generators/random-unique-name.generator';
 import { isDeepEmpty } from '../../shared/utils/validation/common.validation';
@@ -24,10 +21,7 @@ export class UserService {
     private readonly masterService: MasterService,
   ) {}
 
-  async getUser(
-    payload: GetUserArgs,
-    options?: ServiceActionOptions,
-  ): Promise<User | null> {
+  async getUser(payload: GetUserArgs, options?: ServiceActionOptions): Promise<User | null> {
     if (options?.validateDTO) {
       await validateDTO(payload, GetUserArgs);
     }
@@ -46,15 +40,11 @@ export class UserService {
     }
 
     if (payload?.aka) {
-      queryConditions.push(
-        where(fn('LOWER', col('aka')), payload.aka.toLowerCase()),
-      );
+      queryConditions.push(where(fn('LOWER', col('aka')), payload.aka.toLowerCase()));
     }
 
     if (payload?.username) {
-      queryConditions.push(
-        where(fn('LOWER', col('username')), payload.username.toLowerCase()),
-      );
+      queryConditions.push(where(fn('LOWER', col('username')), payload.username.toLowerCase()));
     }
 
     const user = await this.user.findOne({
@@ -143,10 +133,7 @@ export class UserService {
     return this.getUser({ userId: userCreated.id }, options) as Promise<User>;
   }
 
-  async updateUser(
-    payload: UpdateUserArgs,
-    options?: ServiceActionOptions,
-  ): Promise<User | null> {
+  async updateUser(payload: UpdateUserArgs, options?: ServiceActionOptions): Promise<User | null> {
     if (options?.validateDTO) {
       await validateDTO(payload, UpdateUserArgs);
     }

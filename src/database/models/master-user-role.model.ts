@@ -9,15 +9,10 @@ import {
   Unique,
 } from 'sequelize-typescript';
 
-export type MasterUserRoleCreation = Partial<
-  Pick<MasterUserRole, 'id' | 'name'>
->;
+export type MasterUserRoleCreation = Partial<Pick<MasterUserRole, 'id' | 'name'>>;
 
 @Table({ tableName: 'master_user_roles', timestamps: false, paranoid: false })
-export class MasterUserRole extends Model<
-  MasterUserRole,
-  MasterUserRoleCreation
-> {
+export class MasterUserRole extends Model<MasterUserRole, MasterUserRoleCreation> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

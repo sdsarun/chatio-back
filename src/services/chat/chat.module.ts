@@ -12,12 +12,7 @@ import { MessageRead } from '../../database/models/message-read.model';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([
-      Conversation,
-      ConversationParticipant,
-      Message,
-      MessageRead,
-    ]),
+    SequelizeModule.forFeature([Conversation, ConversationParticipant, Message, MessageRead]),
     AuthModule,
     UserModule,
     MasterModule,

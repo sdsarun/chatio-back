@@ -1,27 +1,17 @@
-import {
-  Injectable,
-  ValidationPipeOptions,
-  VersioningOptions,
-  VersioningType,
-} from '@nestjs/common';
+import { Injectable, ValidationPipeOptions, VersioningOptions, VersioningType } from '@nestjs/common';
 import {
   CorsOptions,
   CorsOptionsDelegate,
 } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { ConfigService } from '@nestjs/config';
-import {
-  Environment,
-  EnvironmentVariables,
-} from '../shared/constants/env.constant';
+import { Environment, EnvironmentVariables } from '../shared/constants/env.constant';
 import { SequelizeModuleOptions } from '@nestjs/sequelize';
 import DB_MODELS from '../database/models';
 import { JwtSignOptions } from '@nestjs/jwt';
 
 @Injectable()
 export class ConfigurationService {
-  constructor(
-    private readonly configService: ConfigService<EnvironmentVariables>,
-  ) {}
+  constructor(private readonly configService: ConfigService<EnvironmentVariables>) {}
 
   get config(): ConfigService<EnvironmentVariables> {
     return this.configService;

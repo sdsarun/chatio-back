@@ -94,10 +94,7 @@ export class MasterService {
     });
   }
 
-  async findConservationTypeById(
-    payload: FindConversationTypeByIdDTO,
-    options?: ServiceActionOptions,
-  ) {
+  async findConservationTypeById(payload: FindConversationTypeByIdDTO, options?: ServiceActionOptions) {
     if (options?.validateDTO) {
       await validateDTO(payload, FindConversationTypeByIdDTO);
     }

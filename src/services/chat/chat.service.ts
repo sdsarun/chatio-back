@@ -72,27 +72,20 @@ export class ChatService {
 
     const user = this.extractUserFromClient(client);
 
-    const strangerConversation =
-      await this.findActiveStrangerConversationByUserId(
-        { userId: user.id },
-        options,
-      );
+    const strangerConversation = await this.findActiveStrangerConversationByUserId(
+      { userId: user.id },
+      options,
+    );
     if (strangerConversation) {
       await Promise.all(
-        strangerConversation.participants.map((record) =>
-          this.leftConversation(record, options),
-        ),
+        strangerConversation.participants.map((record) => this.leftConversation(record, options)),
       );
     }
 
     const strangerQueue = await this.cache.manager.get<StrangerQueue>(
       ChatCacheKey.MatchingStrangerQueue,
     );
-    if (
-      strangerQueue &&
-      Object.keys(strangerQueue).length > 0 &&
-      !strangerQueue?.[user.id]
-    ) {
+    if (strangerQueue && Object.keys(strangerQueue).length > 0 && !strangerQueue?.[user.id]) {
       const stranger = Object.values(strangerQueue)[0];
 
       const { conversation, participants } = await this.sqz.transaction(
@@ -120,9 +113,7 @@ export class ChatService {
         },
       );
 
-      await Promise.all(
-        participants.map((record) => this.deleteUserMatchingInCache(record)),
-      );
+      await Promise.all(participants.map((record) => this.deleteUserMatchingInCache(record)));
       return { status: 'matched', conversation, participants };
     } else {
       await this.addUserMatchingInCache({ userId: user.id });
@@ -138,10 +129,9 @@ export class ChatService {
       await validateDTO(payload, CreateConversationDTO);
     }
     const { conversationTypeName } = payload;
-    const selectedConversationType =
-      await this.masterService.findConservationTypeByName({
-        name: conversationTypeName,
-      });
+    const selectedConversationType = await this.masterService.findConservationTypeByName({
+      name: conversationTypeName,
+    });
     if (!selectedConversationType) {
       throw new WsException('Conversation type is missing.');
     }
@@ -159,11 +149,7 @@ export class ChatService {
     options?: TransactionalServiceActionOptions,
   ): Promise<ConversationParticipant[]> {
     if (options?.validateDTO) {
-      await Promise.all(
-        payload.map((payloadItem) =>
-          validateDTO(payloadItem, JoinConversationDTO),
-        ),
-      );
+      await Promise.all(payload.map((payloadItem) => validateDTO(payloadItem, JoinConversationDTO)));
     }
     return this.conversationParticipant.bulkCreate(payload, {
       transaction: options?.transaction,
@@ -196,14 +182,10 @@ export class ChatService {
   }
 
   async getUserConnections(): Promise<UserConnections | null> {
-    return this.cache.manager.get<UserConnections>(
-      ChatCacheKey.UserConnections,
-    );
+    return this.cache.manager.get<UserConnections>(ChatCacheKey.UserConnections);
   }
 
-  async addUserConnectionInCache(
-    payload: AddUserConnectionDTO,
-  ): Promise<{ user: User }> {
+  async addUserConnectionInCache(payload: AddUserConnectionDTO): Promise<{ user: User }> {
     const { client } = payload;
     const user = this.extractUserFromClient(client);
     const userConnections = (await this.getUserConnections()) || {};
@@ -212,59 +194,37 @@ export class ChatService {
       userId: user.id,
       username: user.username,
     };
-    this.cache.manager.set<UserConnections>(
-      ChatCacheKey.UserConnections,
-      userConnections,
-    );
+    this.cache.manager.set<UserConnections>(ChatCacheKey.UserConnections, userConnections);
     return { user };
   }
 
-  async deleteUserConnectionInCache(
-    payload: DeleteUserConnectionInCacheDTO,
-  ): Promise<{ user: User }> {
+  async deleteUserConnectionInCache(payload: DeleteUserConnectionInCacheDTO): Promise<{ user: User }> {
     const { client } = payload;
     const user = this.extractUserFromClient(client);
     const userConnections = (await this.getUserConnections()) || {};
     delete userConnections[user.id];
-    this.cache.manager.set<UserConnections>(
-      ChatCacheKey.UserConnections,
-      userConnections,
-    );
+    this.cache.manager.set<UserConnections>(ChatCacheKey.UserConnections, userConnections);
     await this.deleteUserMatchingInCache({ userId: user.id });
     return { user };
   }
 
-  async addUserMatchingInCache(
-    payload: AddUserMatchingInCacheDTO,
-  ): Promise<void> {
+  async addUserMatchingInCache(payload: AddUserMatchingInCacheDTO): Promise<void> {
     const { userId } = payload;
     const strangerQueue =
-      (await this.cache.manager.get<StrangerQueue>(
-        ChatCacheKey.MatchingStrangerQueue,
-      )) || {};
+      (await this.cache.manager.get<StrangerQueue>(ChatCacheKey.MatchingStrangerQueue)) || {};
     if (!strangerQueue?.[userId]) {
       strangerQueue[userId] = { userId };
-      await this.cache.manager.set<StrangerQueue>(
-        ChatCacheKey.MatchingStrangerQueue,
-        strangerQueue,
-      );
+      await this.cache.manager.set<StrangerQueue>(ChatCacheKey.MatchingStrangerQueue, strangerQueue);
     }
   }
 
-  async deleteUserMatchingInCache(
-    payload: DeleteUserMatchingInCacheDTO,
-  ): Promise<void> {
+  async deleteUserMatchingInCache(payload: DeleteUserMatchingInCacheDTO): Promise<void> {
     const { userId } = payload;
     const strangerQueue =
-      (await this.cache.manager.get<StrangerQueue>(
-        ChatCacheKey.MatchingStrangerQueue,
-      )) || {};
+      (await this.cache.manager.get<StrangerQueue>(ChatCacheKey.MatchingStrangerQueue)) || {};
     if (strangerQueue?.[userId]) {
       delete strangerQueue[userId];
-      await this.cache.manager.set<StrangerQueue>(
-        ChatCacheKey.MatchingStrangerQueue,
-        strangerQueue,
-      );
+      await this.cache.manager.set<StrangerQueue>(ChatCacheKey.MatchingStrangerQueue, strangerQueue);
     }
   }
 
@@ -277,8 +237,7 @@ export class ChatService {
     }
     const { userId, conversationTypeName = '', isLeft } = payload;
 
-    const whereConversationParticipant: WhereOptions<ConversationParticipant> =
-      { userId };
+    const whereConversationParticipant: WhereOptions<ConversationParticipant> = { userId };
     const whereConversationType: WhereOptions<MasterConversationType> = {};
 
     if (isBoolean(isLeft)) {

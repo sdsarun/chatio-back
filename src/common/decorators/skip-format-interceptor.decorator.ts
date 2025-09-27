@@ -3,11 +3,7 @@ export const SkipFormatResponseInterceptorPropertyName = Symbol(
 );
 
 export function SkipFormatResponseInterceptor() {
-  return function (
-    _target: any,
-    _propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
+  return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
     descriptor.value[SkipFormatResponseInterceptorPropertyName] = true;
   };
 }

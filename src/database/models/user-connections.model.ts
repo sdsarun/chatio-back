@@ -12,22 +12,11 @@ import {
 import { User } from './user.model';
 
 export type UserConnectionCreation = Partial<
-  Pick<
-    UserConnection,
-    | 'id'
-    | 'requesterId'
-    | 'addresseeId'
-    | 'isAccept'
-    | 'requestedAt'
-    | 'acceptedAt'
-  >
+  Pick<UserConnection, 'id' | 'requesterId' | 'addresseeId' | 'isAccept' | 'requestedAt' | 'acceptedAt'>
 >;
 
 @Table({ tableName: 'user_connections', updatedAt: false, paranoid: false })
-export class UserConnection extends Model<
-  UserConnection,
-  UserConnectionCreation
-> {
+export class UserConnection extends Model<UserConnection, UserConnectionCreation> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

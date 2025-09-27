@@ -42,9 +42,7 @@ describe('exceptionUtils', () => {
   describe('getExceptionMessage', () => {
     it('should return message once instance is HttpException or Error', () => {
       const errorMessage = 'This is should got this error message';
-      const message1 = getExceptionMessage(
-        new HttpException(errorMessage, 400),
-      );
+      const message1 = getExceptionMessage(new HttpException(errorMessage, 400));
       const message2 = getExceptionMessage(new Error(errorMessage));
 
       expect(message1).toBe(errorMessage);

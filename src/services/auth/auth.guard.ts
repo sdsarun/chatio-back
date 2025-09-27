@@ -55,17 +55,13 @@ export class AuthGuard implements CanActivate {
         case 'graphql': {
           const ctx = GqlExecutionContext.create(context);
           const req = ctx.getContext().req as Request;
-          accessToken = this.extractBearerToken(
-            req.headers?.authorization || '',
-          );
+          accessToken = this.extractBearerToken(req.headers?.authorization || '');
           publicApiKey = (req.headers?.['public-api-key'] || '') as string;
           break;
         }
         case 'http': {
           const req = context.switchToHttp().getRequest<Request>();
-          accessToken = this.extractBearerToken(
-            req.headers?.authorization || '',
-          );
+          accessToken = this.extractBearerToken(req.headers?.authorization || '');
           publicApiKey = (req.headers?.['public-api-key'] || '') as string;
           break;
         }
@@ -81,10 +77,7 @@ export class AuthGuard implements CanActivate {
       }
 
       const isPublic = this.reflector
-        .getAllAndMerge(AUTH_PUBLIC_KEY, [
-          context.getHandler(),
-          context.getClass(),
-        ])
+        .getAllAndMerge(AUTH_PUBLIC_KEY, [context.getHandler(), context.getClass()])
         .some((value) => value === true);
 
       const roles = this.reflector.getAllAndMerge<UserRole[]>(AUTH_ROLES_KEY, [
@@ -104,10 +97,7 @@ export class AuthGuard implements CanActivate {
     }
   }
 
-  private attachDataToContext(
-    context: ExecutionContext,
-    data: Record<string, any>,
-  ): void {
+  private attachDataToContext(context: ExecutionContext, data: Record<string, any>): void {
     const type = context.getType<GqlContextType>();
 
     switch (type) {
@@ -117,8 +107,7 @@ export class AuthGuard implements CanActivate {
         break;
       }
       case 'graphql': {
-        const req = GqlExecutionContext.create(context).getContext()
-          .req as Request;
+        const req = GqlExecutionContext.create(context).getContext().req as Request;
         Object.assign(req, data);
         break;
       }

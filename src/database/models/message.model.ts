@@ -15,16 +15,7 @@ import { User } from './user.model';
 import { MessageRead } from './message-read.model';
 
 export type MessageCreation = Partial<
-  Pick<
-    Message,
-    | 'id'
-    | 'senderId'
-    | 'conversationId'
-    | 'content'
-    | 'sentAt'
-    | 'updatedAt'
-    | 'deletedAt'
-  >
+  Pick<Message, 'id' | 'senderId' | 'conversationId' | 'content' | 'sentAt' | 'updatedAt' | 'deletedAt'>
 >;
 
 @Table({ tableName: 'messages' })

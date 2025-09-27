@@ -18,9 +18,7 @@ describe('validateDTO', () => {
   });
 
   it('should not throw error if set throwErrorOnValidateFailed to false', () => {
-    expect(
-      validateDTO(failedDTO, DTO, { throwErrorOnValidateFailed: false }),
-    ).resolves.toHaveLength(1);
+    expect(validateDTO(failedDTO, DTO, { throwErrorOnValidateFailed: false })).resolves.toHaveLength(1);
   });
 
   it('should pass once plain object not instance from class-validator', async () => {

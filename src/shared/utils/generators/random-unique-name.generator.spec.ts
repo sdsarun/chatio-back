@@ -42,9 +42,7 @@ describe('randomUniqueName', () => {
   });
 
   it('should return a different name when randomUUID generates different values', () => {
-    (randomUUID as jest.Mock)
-      .mockReturnValueOnce('abcd1234')
-      .mockReturnValueOnce('efgh5678');
+    (randomUUID as jest.Mock).mockReturnValueOnce('abcd1234').mockReturnValueOnce('efgh5678');
 
     const result1 = randomUniqueName();
     const result2 = randomUniqueName();

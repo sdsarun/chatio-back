@@ -22,8 +22,7 @@ export class AuthController {
   @ApiBadRequestResponse({ description: 'Invalid DTO or mismatch types' })
   @ApiUnauthorizedResponse({ description: 'id token invalid' })
   @ApiForbiddenResponse({
-    description:
-      'User account is inactive. Please contact support to activate your account.',
+    description: 'User account is inactive. Please contact support to activate your account.',
   })
   @ApiCreatedResponse({ description: 'Sign in complete.' })
   async handleGoogleSignIn(

@@ -9,9 +9,7 @@ import {
   Unique,
 } from 'sequelize-typescript';
 
-export type MasterConversationTypeCreation = Partial<
-  Pick<MasterConversationType, 'id' | 'name'>
->;
+export type MasterConversationTypeCreation = Partial<Pick<MasterConversationType, 'id' | 'name'>>;
 
 @Table({
   tableName: 'master_conversation_types',

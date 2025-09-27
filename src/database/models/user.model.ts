@@ -17,14 +17,7 @@ import { MasterUserGender } from './master-user-gender.model';
 export type UserCreation = Partial<
   Pick<
     User,
-    | 'id'
-    | 'username'
-    | 'aka'
-    | 'userRoleId'
-    | 'userGenderId'
-    | 'createdAt'
-    | 'updatedAt'
-    | 'deletedAt'
+    'id' | 'username' | 'aka' | 'userRoleId' | 'userGenderId' | 'createdAt' | 'updatedAt' | 'deletedAt'
   >
 >;
 

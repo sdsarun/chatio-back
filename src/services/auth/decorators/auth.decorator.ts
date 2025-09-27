@@ -12,9 +12,7 @@ export type AuthDecoratorValue = {
 export function Auth(options: AuthDecoratorValue = {}) {
   const { roles = [], isPublic = false } = options;
 
-  const decorators: Array<
-    ClassDecorator | MethodDecorator | PropertyDecorator
-  > = [ApiBearerAuth()];
+  const decorators: Array<ClassDecorator | MethodDecorator | PropertyDecorator> = [ApiBearerAuth()];
 
   if (isPublic) {
     decorators.push(Public());

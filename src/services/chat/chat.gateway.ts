@@ -47,8 +47,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client,
     });
     if (toMatchingStrangerResult.status === 'matched') {
-      const userConnections =
-        (await this.chatService.getUserConnections()) || {};
+      const userConnections = (await this.chatService.getUserConnections()) || {};
       for (const record of toMatchingStrangerResult.participants!) {
         const { userId } = record;
 
@@ -65,14 +64,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleSkipStranger(@MessageBody() message: LeftConversationDTO) {
     const userConnections = (await this.chatService.getUserConnections()) || {};
 
-    const leftConversationResult =
-      await this.chatService.leftConversation(message);
+    const leftConversationResult = await this.chatService.leftConversation(message);
     for (const record of leftConversationResult) {
       const { userId } = record;
 
-      this.server
-        .to(userConnections[userId].clientId)
-        .emit(ChatEvent.SkipStranger, record);
+      this.server.to(userConnections[userId].clientId).emit(ChatEvent.SkipStranger, record);
     }
   }
 

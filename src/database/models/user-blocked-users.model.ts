@@ -16,10 +16,7 @@ export type UserBlockedUserCreation = Partial<
 >;
 
 @Table({ tableName: 'user_blocked_users', updatedAt: false, paranoid: false })
-export class UserBlockedUser extends Model<
-  UserBlockedUser,
-  UserBlockedUserCreation
-> {
+export class UserBlockedUser extends Model<UserBlockedUser, UserBlockedUserCreation> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

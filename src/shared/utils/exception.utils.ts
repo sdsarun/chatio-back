@@ -1,8 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, InternalServerErrorException } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 
 export function getExceptionHttpStatus(exception: any): number {
