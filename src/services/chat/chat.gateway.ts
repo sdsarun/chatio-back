@@ -1,4 +1,4 @@
-import { UseFilters } from '@nestjs/common';
+import { HttpStatus, UseFilters } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -16,6 +16,10 @@ import { ChatEvent } from './constants/chat-events.constant';
 import { LeftConversationDTO } from './dto/left-conversation.dto';
 import { GetMessagesDTO } from './dto/get-messages.dto';
 import { SendMessageDTO } from './dto/send-message.dto';
+import { UserEvents } from './constants/user-events.constant';
+import { UpdateUserConnectionStatusDTO } from './dto/update-user-connection-status.dto';
+import { GetUserStatusByUserIdDTO } from './dto/get-user-status-by-user-id.dto';
+import { wsResponse } from '../../shared/utils/ws-response.utils';
 
 @UseFilters(AllExceptionsFilter)
 @WebSocketGateway()
@@ -39,6 +43,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client
     });
     this.logger.log(`user:disconnected: ${user.username}`);
+
+    const userConnections = (await this.chatService.getUserConnections()) || {};
+    for (const { userId, connectionStatus } of Object.values(userConnections)) {
+      this.server.emit(UserEvents.GetUserStatusByUserId, { userId, connectionStatus });
+    }
   }
 
   @SubscribeMessage(ChatEvent.MatchingStranger)
@@ -50,7 +59,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const userConnections = (await this.chatService.getUserConnections()) || {};
       for (const record of toMatchingStrangerResult.participants!) {
         const { userId } = record;
-
         this.server
           .to(userConnections[userId].clientId)
           .emit(ChatEvent.MatchedStranger, toMatchingStrangerResult);
@@ -67,14 +75,37 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const leftConversationResult = await this.chatService.leftConversation(message);
     for (const record of leftConversationResult) {
       const { userId } = record;
-
       this.server.to(userConnections[userId].clientId).emit(ChatEvent.SkipStranger, record);
     }
   }
 
   @SubscribeMessage(ChatEvent.GetMessages)
-  handleGetMessages(@MessageBody() message: GetMessagesDTO) {
-    return this.chatService.getMessages(message);
+  async handleGetMessages(@MessageBody() message: GetMessagesDTO) {
+    if (!message.requesterId) {
+      return wsResponse({
+        error: {
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Requester ID is missing.'
+        }
+      });
+    }
+
+    const isConversationExists = await this.chatService.isConversationExists({
+      userId: message.requesterId,
+      converstaionId: message.conversationId
+    });
+
+    if (!isConversationExists) {
+      return wsResponse({
+        error: {
+          statusCode: HttpStatus.FORBIDDEN,
+          message: 'Conversation does not exist or you do not have access.'
+        }
+      });
+    }
+
+    const messages = await this.chatService.getMessages({ conversationId: message.conversationId });
+    return wsResponse({ data: messages });
   }
 
   @SubscribeMessage(ChatEvent.SendMessage)
@@ -100,5 +131,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.server.to(clientId).emit(ChatEvent.GetMessages, newMessages);
       }
     }
+  }
+
+  @SubscribeMessage(UserEvents.GetUserStatusByUserId)
+  async handleGetUserStatusByUserId(@MessageBody() message: GetUserStatusByUserIdDTO) {
+    const userConnections = (await this.chatService.getUserConnections()) || {};
+    return wsResponse({ data: userConnections?.[message.userId] });
+  }
+
+  @SubscribeMessage(UserEvents.UpdateUserConnectionStatus)
+  async handleUpdateUserConnectionStatus(@MessageBody() message: UpdateUserConnectionStatusDTO) {
+    const updatedStatus = await this.chatService.updateUserConnectionStatus(message);
+    const userConnections = (await this.chatService.getUserConnections()) || {};
+    for (const { userId, connectionStatus } of Object.values(userConnections)) {
+      this.server.emit(UserEvents.GetUserStatusByUserId, { userId, connectionStatus });
+    }
+    return wsResponse({ data: updatedStatus });
   }
 }

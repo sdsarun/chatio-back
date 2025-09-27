@@ -3,14 +3,14 @@ import { IsNumber, IsOptional, IsUUID, Max, Min } from 'class-validator';
 export class GetMessagesDTO {
   @IsUUID()
   @IsOptional()
-  messageId?: string;
-
-  @IsUUID()
-  @IsOptional()
   requesterId?: string;
 
   @IsUUID()
   conversationId: string;
+
+  @IsUUID()
+  @IsOptional()
+  messageId?: string;
 
   @Min(0)
   @Max(100)

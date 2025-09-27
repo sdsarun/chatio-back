@@ -33,6 +33,9 @@ import { Message } from '../../database/models/message.model';
 import { GetMessagesDTO } from './dto/get-messages.dto';
 import { SendMessageDTO } from './dto/send-message.dto';
 import { MessageRead } from '../../database/models/message-read.model';
+import { UserConnectionStatus } from './constants/user-connection-status.constant';
+import { UpdateUserConnectionStatusDTO } from './dto/update-user-connection-status.dto';
+import { IsConversationExistsDTO } from './dto/is-conversation-exists.dto';
 
 @Injectable()
 export class ChatService {
@@ -192,7 +195,9 @@ export class ChatService {
     userConnections[user.id] = {
       clientId: client.id,
       userId: user.id,
-      username: user.username
+      username: user.username,
+      connectionStatus: UserConnectionStatus.Online,
+      lastOnlineStatusAt: new Date()
     };
     this.cache.manager.set<UserConnections>(ChatCacheKey.UserConnections, userConnections);
     return { user };
@@ -226,6 +231,23 @@ export class ChatService {
       delete strangerQueue[userId];
       await this.cache.manager.set<StrangerQueue>(ChatCacheKey.MatchingStrangerQueue, strangerQueue);
     }
+  }
+
+  async updateUserConnectionStatus(
+    payload: UpdateUserConnectionStatusDTO
+  ): Promise<Pick<UserConnections[string], 'userId' | 'connectionStatus'> | null> {
+    const { userId, connectionStatus } = payload;
+    const userConnections = (await this.getUserConnections()) || {};
+    if (!userConnections?.[userId]) {
+      return {
+        userId,
+        connectionStatus: UserConnectionStatus.Offline
+      };
+    }
+
+    userConnections[userId].connectionStatus = connectionStatus;
+    this.cache.manager.set<UserConnections>(ChatCacheKey.UserConnections, userConnections);
+    return { userId, connectionStatus };
   }
 
   async findAllConversationByUserId(
@@ -384,5 +406,20 @@ export class ChatService {
       raw: true,
       transaction: options?.transaction
     });
+  }
+
+  async isConversationExists(
+    payload: IsConversationExistsDTO,
+    options?: TransactionalServiceActionOptions
+  ): Promise<boolean> {
+    const converstaion = await this.conversationParticipant.findOne({
+      where: {
+        userId: payload.userId,
+        conversationId: payload.converstaionId
+      },
+      raw: true,
+      transaction: options?.transaction
+    });
+    return converstaion ? true : false;
   }
 }
