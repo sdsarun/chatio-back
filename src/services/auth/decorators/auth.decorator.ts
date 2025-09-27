@@ -1,8 +1,8 @@
-import { applyDecorators } from "@nestjs/common";
-import { ApiBearerAuth } from "@nestjs/swagger";
-import { UserRole } from "../../master/master.constants";
-import { Public } from "./public.decorator";
-import { Roles } from "./roles.decorator";
+import { applyDecorators } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { UserRole } from '../../master/master.constants';
+import { Public } from './public.decorator';
+import { Roles } from './roles.decorator';
 
 export type AuthDecoratorValue = {
   roles?: UserRole[];
@@ -10,14 +10,11 @@ export type AuthDecoratorValue = {
 };
 
 export function Auth(options: AuthDecoratorValue = {}) {
-  const { 
-    roles = [], 
-    isPublic = false 
-  } = options;
+  const { roles = [], isPublic = false } = options;
 
-  const decorators: Array<ClassDecorator | MethodDecorator | PropertyDecorator> = [
-    ApiBearerAuth(),
-  ];
+  const decorators: Array<
+    ClassDecorator | MethodDecorator | PropertyDecorator
+  > = [ApiBearerAuth()];
 
   if (isPublic) {
     decorators.push(Public());

@@ -1,6 +1,6 @@
 export class VerifyGoogleIDTokenError extends Error {
-  constructor(message: string = "Failed to verify Google ID Token") {
-    super(message)
-    this.name = "VerifyGoogleIDTokenError"
+  constructor(message: string = 'Failed to verify Google ID Token') {
+    super(message);
+    this.name = 'VerifyGoogleIDTokenError';
   }
 }

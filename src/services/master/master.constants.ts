@@ -1,4 +1,4 @@
-import { registerEnumType } from "@nestjs/graphql";
+import { registerEnumType } from '@nestjs/graphql';
 
 export enum UserRole {
   REGISTERED = 'REGISTERED',
@@ -6,16 +6,16 @@ export enum UserRole {
 }
 
 export enum UserGender {
-  MALE = "MALE",
-  FEMALE = "FEMALE",
-  RATHER_NOT_SAY = "RATHER_NOT_SAY",
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  RATHER_NOT_SAY = 'RATHER_NOT_SAY',
 }
 
 export enum ConversationType {
-  DIRECT_MESSAGE = "DIRECT_MESSAGE",
-  PRIVATE_GROUP_MESSAGE = "PRIVATE_GROUP_MESSAGE",
-  PUBLIC_GROUP_MESSAGE = "PUBLIC_GROUP_MESSAGE",
-  STRANGER_MESSAGE = "STRANGER_MESSAGE",
+  DIRECT_MESSAGE = 'DIRECT_MESSAGE',
+  PRIVATE_GROUP_MESSAGE = 'PRIVATE_GROUP_MESSAGE',
+  PUBLIC_GROUP_MESSAGE = 'PUBLIC_GROUP_MESSAGE',
+  STRANGER_MESSAGE = 'STRANGER_MESSAGE',
 }
 
 registerEnumType(UserRole, {
@@ -23,9 +23,9 @@ registerEnumType(UserRole, {
 });
 
 registerEnumType(UserGender, {
-  name: "UserGenderType"
+  name: 'UserGenderType',
 });
 
 registerEnumType(ConversationType, {
-  name: "ConversationType"
+  name: 'ConversationType',
 });

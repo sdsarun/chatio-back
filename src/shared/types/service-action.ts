@@ -1,4 +1,4 @@
-import { Transaction } from "sequelize";
+import { Transaction } from 'sequelize';
 
 export type ServiceActionOptions = {
   validateDTO?: boolean;
@@ -7,4 +7,4 @@ export type ServiceActionOptions = {
 
 export type TransactionalServiceActionOptions = ServiceActionOptions & {
   transaction?: Transaction;
-}
+};

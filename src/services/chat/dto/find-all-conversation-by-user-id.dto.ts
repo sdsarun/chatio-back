@@ -1,5 +1,5 @@
-import { IsBoolean, IsEnum, IsOptional, IsUUID } from "class-validator";
-import { ConversationType } from "../../master/master.constants";
+import { IsBoolean, IsEnum, IsOptional, IsUUID } from 'class-validator';
+import { ConversationType } from '../../master/master.constants';
 
 export class FindAllConversationByUserIdDTO {
   @IsUUID()

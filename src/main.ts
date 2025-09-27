@@ -43,8 +43,17 @@ async function bootstrap() {
   app.enableCors(configurationService.corsConfig);
   app.enableVersioning(configurationService.versioningConfig);
 
-  app.useGlobalPipes(new ValidationPipe(configurationService.validationPipeConfig));
-  app.useWebSocketAdapter(new SocketIOExtendedAdapter({ app, configurationService, authService, logger }));
+  app.useGlobalPipes(
+    new ValidationPipe(configurationService.validationPipeConfig),
+  );
+  app.useWebSocketAdapter(
+    new SocketIOExtendedAdapter({
+      app,
+      configurationService,
+      authService,
+      logger,
+    }),
+  );
 
   if (configurationService.isDevelopment) {
     const config = new DocumentBuilder()
@@ -66,7 +75,10 @@ async function bootstrap() {
     logger.log(`Application running on ${url}`);
   };
 
-  await app.listen(configurationService.appConfig.port, () => void listenCallback());
+  await app.listen(
+    configurationService.appConfig.port,
+    () => void listenCallback(),
+  );
 }
 
 bootstrap();

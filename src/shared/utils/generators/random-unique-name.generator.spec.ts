@@ -11,7 +11,7 @@ describe('randomUniqueName', () => {
   });
 
   it('should generate a valid unique guest username with the correct format', () => {
-    (randomUUID as jest.Mock).mockReturnValue("12345678");
+    (randomUUID as jest.Mock).mockReturnValue('12345678');
 
     const result = randomUniqueName();
 
@@ -23,7 +23,7 @@ describe('randomUniqueName', () => {
   });
 
   it('should generate unique usernames even if randomUUID is mocked', () => {
-    (randomUUID as jest.Mock).mockReturnValue("12345678");
+    (randomUUID as jest.Mock).mockReturnValue('12345678');
 
     const result1 = randomUniqueName();
     const result2 = randomUniqueName();
@@ -32,7 +32,7 @@ describe('randomUniqueName', () => {
   });
 
   it('should ensure randomUUID is used to generate the UUID part of the username', () => {
-    const uuid = "abcd1234";
+    const uuid = 'abcd1234';
     (randomUUID as jest.Mock).mockReturnValue(uuid);
 
     const result = randomUniqueName();
@@ -43,8 +43,8 @@ describe('randomUniqueName', () => {
 
   it('should return a different name when randomUUID generates different values', () => {
     (randomUUID as jest.Mock)
-      .mockReturnValueOnce("abcd1234")
-      .mockReturnValueOnce("efgh5678");
+      .mockReturnValueOnce('abcd1234')
+      .mockReturnValueOnce('efgh5678');
 
     const result1 = randomUniqueName();
     const result2 = randomUniqueName();

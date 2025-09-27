@@ -14,10 +14,16 @@ export class TokenService {
   }
 
   async generateAccessToken(payload: Record<string, any>): Promise<string> {
-    return this.jwtService.signAsync(payload, this.configurationService.jwtConfig.accessTokenConfig);
+    return this.jwtService.signAsync(
+      payload,
+      this.configurationService.jwtConfig.accessTokenConfig,
+    );
   }
 
   async verifyAccessToken<T extends object = any>(token: string): Promise<T> {
-    return this.jwtService.verifyAsync<T>(token, this.configurationService.jwtConfig.accessTokenConfig);
+    return this.jwtService.verifyAsync<T>(
+      token,
+      this.configurationService.jwtConfig.accessTokenConfig,
+    );
   }
 }

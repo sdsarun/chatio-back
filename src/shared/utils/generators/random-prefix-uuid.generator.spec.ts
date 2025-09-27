@@ -16,12 +16,12 @@ describe('randomPrefixUUID', () => {
     expect(randomUUID).toHaveBeenCalled();
     expect(result).toEqual('request-auto-gen_123e4567e89b12d3a456426614174000');
 
-    prefix = "guest-user"
-    result = randomPrefixUUID(prefix)
+    prefix = 'guest-user';
+    result = randomPrefixUUID(prefix);
     expect(result).toEqual(`guest-user_123e4567e89b12d3a456426614174000`);
 
-    prefix = "guest_user"
-    result = randomPrefixUUID(prefix)
+    prefix = 'guest_user';
+    result = randomPrefixUUID(prefix);
     expect(result).toEqual(`guest_user_123e4567e89b12d3a456426614174000`);
   });
 

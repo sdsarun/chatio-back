@@ -7,11 +7,16 @@ export async function validateDTO<T extends object>(
   classDTO: ClassConstructor<T>,
   options?: ServiceActionOptions,
 ): Promise<ValidationError[]> {
-  const ensurePlainToInstanceDTO = isInstance(plainDTO, classDTO) ? plainDTO: plainToInstance(classDTO, plainDTO);
-  const errors: ValidationError[] = await validate(ensurePlainToInstanceDTO, { whitelist: true });
+  const ensurePlainToInstanceDTO = isInstance(plainDTO, classDTO)
+    ? plainDTO
+    : plainToInstance(classDTO, plainDTO);
+  const errors: ValidationError[] = await validate(ensurePlainToInstanceDTO, {
+    whitelist: true,
+  });
 
   if (errors.length > 0) {
-    const throwErrorOnValidateFailed: boolean = options?.throwErrorOnValidateFailed ?? true;
+    const throwErrorOnValidateFailed: boolean =
+      options?.throwErrorOnValidateFailed ?? true;
     if (throwErrorOnValidateFailed) {
       throw new Error(errors.toString());
     } else {

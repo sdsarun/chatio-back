@@ -13,7 +13,7 @@ describe('exceptionUtils', () => {
       expect(status).toBe(401);
     });
 
-    it("should return 500 once instance is Error", () => {
+    it('should return 500 once instance is Error', () => {
       const status = getExceptionHttpStatus(new Error());
       expect(status).toBe(500);
     });
@@ -42,14 +42,16 @@ describe('exceptionUtils', () => {
   describe('getExceptionMessage', () => {
     it('should return message once instance is HttpException or Error', () => {
       const errorMessage = 'This is should got this error message';
-      const message1 = getExceptionMessage(new HttpException(errorMessage, 400));
+      const message1 = getExceptionMessage(
+        new HttpException(errorMessage, 400),
+      );
       const message2 = getExceptionMessage(new Error(errorMessage));
 
       expect(message1).toBe(errorMessage);
       expect(message2).toBe(errorMessage);
     });
 
-    it("should return default internal server error once error is not instanceof HttpException", () => {
+    it('should return default internal server error once error is not instanceof HttpException', () => {
       const message1 = getExceptionMessage({});
       const message2 = getExceptionMessage('hello');
       const message3 = getExceptionMessage(new Map());
@@ -57,7 +59,7 @@ describe('exceptionUtils', () => {
       const message5 = getExceptionMessage([]);
       const message6 = getExceptionMessage(undefined);
       const message7 = getExceptionMessage(55);
-      
+
       expect(message1).toBe('Internal Server Error');
       expect(message2).toBe('Internal Server Error');
       expect(message3).toBe('Internal Server Error');

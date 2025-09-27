@@ -1,10 +1,10 @@
-import { createKeyv as createRedisKeyv } from "@keyv/redis";
-import { CacheModule } from "@nestjs/cache-manager";
-import { Global, Module } from "@nestjs/common";
-import { CacheableMemory } from "cacheable";
-import { Keyv } from "keyv";
-import { ConfigurationService } from "../../configuration/configuration.service";
-import { CacheManagerService } from "./cache-manager.service";
+import { createKeyv as createRedisKeyv } from '@keyv/redis';
+import { CacheModule } from '@nestjs/cache-manager';
+import { Global, Module } from '@nestjs/common';
+import { CacheableMemory } from 'cacheable';
+import { Keyv } from 'keyv';
+import { ConfigurationService } from '../../configuration/configuration.service';
+import { CacheManagerService } from './cache-manager.service';
 
 @Global()
 @Module({
@@ -17,18 +17,18 @@ import { CacheManagerService } from "./cache-manager.service";
           stores: [
             new Keyv({
               store: new CacheableMemory({ lruSize: 5000 }),
-              namespace: "chatio",
+              namespace: 'chatio',
             }),
             createRedisKeyv(configurationService.cacheConfig.redisURI, {
-              namespace: "chatio",
+              namespace: 'chatio',
             }),
           ],
           refreshAllStores: true,
-        }
-      }
-    })
+        };
+      },
+    }),
   ],
   providers: [CacheManagerService],
-  exports: [CacheManagerService]
+  exports: [CacheManagerService],
 })
-export class CacheManagerModule { }
+export class CacheManagerModule {}

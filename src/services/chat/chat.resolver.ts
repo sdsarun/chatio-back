@@ -1,4 +1,1 @@
-
-export class ChatResolver {
-
-}
+export class ChatResolver {}

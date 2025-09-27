@@ -17,13 +17,13 @@ import { Logger } from '../../logger/logger.service';
 @Injectable()
 export class LoggerInterceptor implements NestInterceptor {
   constructor(private readonly logger: Logger) {}
-  
+
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
     const type: ContextType | 'graphql' = context.getType();
-    
+
     switch (type) {
       case 'graphql': {
         return this.handleGraphQLContext(context, next);
@@ -45,7 +45,7 @@ export class LoggerInterceptor implements NestInterceptor {
     const { req: request } = gqlContext.getContext();
     const requestId = request?._requestId;
     const info = gqlContext.getInfo();
-    
+
     const requestInfo = {
       requestId,
       operation: info?.operation?.operation,
@@ -89,11 +89,11 @@ export class LoggerInterceptor implements NestInterceptor {
     next: CallHandler<any>,
   ): Observable<any> {
     const request = context.switchToHttp().getRequest<Request>();
-    
+
     if (!request) {
       return next.handle(); // Handle case where request might be undefined
     }
-    
+
     const requestId = request._requestId;
     const requestInfo = {
       requestId,

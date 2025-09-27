@@ -25,25 +25,30 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly logger: Logger,
     private readonly chatService: ChatService,
-  ) { }
+  ) {}
 
   async handleConnection(client: Socket) {
-    const { user } = await this.chatService.addUserConnectionInCache({ client });
+    const { user } = await this.chatService.addUserConnectionInCache({
+      client,
+    });
     this.logger.log(`user:connected: ${user.username}`);
   }
 
   async handleDisconnect(client: Socket) {
-    const { user } = await this.chatService.deleteUserConnectionInCache({ client });
+    const { user } = await this.chatService.deleteUserConnectionInCache({
+      client,
+    });
     this.logger.log(`user:disconnected: ${user.username}`);
   }
 
   @SubscribeMessage(ChatEvent.MatchingStranger)
-  async handleChatMatchingStranger(
-    @ConnectedSocket() client: Socket,
-  ) {
-    const toMatchingStrangerResult = await this.chatService.toMatchingStranger({ client });
-    if (toMatchingStrangerResult.status === "matched") {
-      const userConnections = await this.chatService.getUserConnections() || {};
+  async handleChatMatchingStranger(@ConnectedSocket() client: Socket) {
+    const toMatchingStrangerResult = await this.chatService.toMatchingStranger({
+      client,
+    });
+    if (toMatchingStrangerResult.status === 'matched') {
+      const userConnections =
+        (await this.chatService.getUserConnections()) || {};
       for (const record of toMatchingStrangerResult.participants!) {
         const { userId } = record;
 
@@ -57,12 +62,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage(ChatEvent.SkipStranger)
-  async handleSkipStranger(
-    @MessageBody() message: LeftConversationDTO,
-  ) {
-    const userConnections = await this.chatService.getUserConnections() || {};
+  async handleSkipStranger(@MessageBody() message: LeftConversationDTO) {
+    const userConnections = (await this.chatService.getUserConnections()) || {};
 
-    const leftConversationResult = await this.chatService.leftConversation(message);
+    const leftConversationResult =
+      await this.chatService.leftConversation(message);
     for (const record of leftConversationResult) {
       const { userId } = record;
 
@@ -73,25 +77,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage(ChatEvent.GetMessages)
-  handleGetMessages(
-    @MessageBody() message: GetMessagesDTO,
-  ) {
+  handleGetMessages(@MessageBody() message: GetMessagesDTO) {
     return this.chatService.getMessages(message);
   }
 
   @SubscribeMessage(ChatEvent.SendMessage)
-  async handleSendMessage(
-    @MessageBody() message: SendMessageDTO,
-  ) {
-    const userConnections = await this.chatService.getUserConnections() || {};
+  async handleSendMessage(@MessageBody() message: SendMessageDTO) {
+    const userConnections = (await this.chatService.getUserConnections()) || {};
 
     const messageSended = await this.chatService.sendMessage(message);
-    const { participants = [] } = await this.chatService.findActiveStrangerConversationByUserId({ userId: messageSended.senderId! }) || {};
+    const { participants = [] } =
+      (await this.chatService.findActiveStrangerConversationByUserId({
+        userId: messageSended.senderId!,
+      })) || {};
 
     const newMessagePayload: GetMessagesDTO = {
       conversationId: messageSended.conversationId!,
       messageId: messageSended.id,
-    }
+    };
 
     const newMessages = await this.chatService.getMessages(newMessagePayload);
 
@@ -99,9 +102,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (participant.userId !== messageSended.senderId) {
         const clientId = userConnections[participant.userId]?.clientId;
         if (clientId) {
-          this.server
-            .to(clientId)
-            .emit(ChatEvent.GetMessages, newMessages);
+          this.server.to(clientId).emit(ChatEvent.GetMessages, newMessages);
         }
       }
     }

@@ -16,7 +16,7 @@ export class UpdateUserInput {
   @IsUUID()
   @IsOptional()
   userRoleId?: string;
-  
+
   @IsUUID()
   @IsOptional()
   userGenderId?: string;

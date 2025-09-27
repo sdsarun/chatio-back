@@ -1,5 +1,5 @@
-import { ArgsType, Field, ID } from "@nestjs/graphql";
-import { IsOptional, IsString, IsUUID } from "class-validator";
+import { ArgsType, Field, ID } from '@nestjs/graphql';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 @ArgsType()
 export class GetUserArgs {

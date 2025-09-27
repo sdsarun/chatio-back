@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
-import { SequelizeModule } from "@nestjs/sequelize";
-import { ConfigurationService } from "../configuration/configuration.service";
-import { Logger } from "../logger/logger.service";
-import { Sequelize } from "sequelize-typescript";
+import { Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { ConfigurationService } from '../configuration/configuration.service';
+import { Logger } from '../logger/logger.service';
+import { Sequelize } from 'sequelize-typescript';
 
 @Module({
   imports: [
@@ -10,16 +10,16 @@ import { Sequelize } from "sequelize-typescript";
       inject: [ConfigurationService],
       useFactory(configurationService: ConfigurationService) {
         return configurationService.databaseConfig;
-      }
+      },
     }),
-  ]
+  ],
 })
 export class DatabaseModule {
   constructor(
     private readonly logger: Logger,
     private readonly sqz: Sequelize,
   ) {
-    this.logger.setContext(DatabaseModule.name)
+    this.logger.setContext(DatabaseModule.name);
     this.testConnection();
   }
 

@@ -1,11 +1,16 @@
-import { ArgumentsHost, Catch, ContextType, ExceptionFilter } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ContextType,
+  ExceptionFilter,
+} from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Request, Response } from 'express';
 import { Socket } from 'socket.io';
 import {
   getExceptionHttpStatus,
   getExceptionMessage,
-  parseException
+  parseException,
 } from '../../shared/utils/exception.utils';
 
 @Catch()
@@ -65,7 +70,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
   private handleWsContext(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToWs();
     const client: Socket = ctx.getClient();
-    
+
     const { httpStatus, message, name } = parseException(exception);
 
     const responseBody = {

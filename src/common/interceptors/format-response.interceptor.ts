@@ -15,13 +15,14 @@ export class FormatResponseInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
-    const isSkip = context.getHandler()[SkipFormatResponseInterceptorPropertyName];
+    const isSkip =
+      context.getHandler()[SkipFormatResponseInterceptorPropertyName];
     if (isSkip) {
       return next.handle();
     }
 
     const contextType = context.getType<ContextType | 'graphql'>();
-    
+
     switch (contextType) {
       case 'http': {
         return this.formatHttpResponse(context, next);
@@ -40,7 +41,7 @@ export class FormatResponseInterceptor implements NestInterceptor {
     next: CallHandler,
   ): Observable<any> {
     const response = context.switchToHttp().getResponse<Response>();
-    
+
     return next.handle().pipe(
       map((controllerResult) => {
         const message = controllerResult?.message ?? 'Success';

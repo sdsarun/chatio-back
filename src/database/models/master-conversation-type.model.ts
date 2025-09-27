@@ -13,7 +13,11 @@ export type MasterConversationTypeCreation = Partial<
   Pick<MasterConversationType, 'id' | 'name'>
 >;
 
-@Table({ tableName: 'master_conversation_types', timestamps: false, paranoid: false })
+@Table({
+  tableName: 'master_conversation_types',
+  timestamps: false,
+  paranoid: false,
+})
 export class MasterConversationType extends Model<
   MasterConversationType,
   MasterConversationTypeCreation

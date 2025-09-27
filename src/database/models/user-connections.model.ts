@@ -24,7 +24,10 @@ export type UserConnectionCreation = Partial<
 >;
 
 @Table({ tableName: 'user_connections', updatedAt: false, paranoid: false })
-export class UserConnection extends Model<UserConnection, UserConnectionCreation> {
+export class UserConnection extends Model<
+  UserConnection,
+  UserConnectionCreation
+> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

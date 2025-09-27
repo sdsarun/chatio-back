@@ -1,5 +1,5 @@
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
-import { UserGender } from "../master.constants";
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { UserGender } from '../master.constants';
 
 export class FindUserGenderByNameDTO {
   @IsString()

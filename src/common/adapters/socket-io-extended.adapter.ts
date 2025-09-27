@@ -1,10 +1,10 @@
-import { INestApplicationContext } from "@nestjs/common";
-import { IoAdapter } from "@nestjs/platform-socket.io";
-import { Server, ServerOptions } from "socket.io";
-import { ConfigurationService } from "../../configuration/configuration.service";
-import { AuthService } from "../../services/auth/auth.service";
-import { UserRole } from "../../services/master/master.constants";
-import { Logger } from "../../logger/logger.service";
+import { INestApplicationContext } from '@nestjs/common';
+import { IoAdapter } from '@nestjs/platform-socket.io';
+import { Server, ServerOptions } from 'socket.io';
+import { ConfigurationService } from '../../configuration/configuration.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { UserRole } from '../../services/master/master.constants';
+import { Logger } from '../../logger/logger.service';
 
 export class SocketIOExtendedAdapter extends IoAdapter {
   constructor(
@@ -13,7 +13,7 @@ export class SocketIOExtendedAdapter extends IoAdapter {
       configurationService: ConfigurationService;
       authService: AuthService;
       logger: Logger;
-    }
+    },
   ) {
     super(services.app);
   }
@@ -25,7 +25,7 @@ export class SocketIOExtendedAdapter extends IoAdapter {
       cors: {
         ...this.services.configurationService.corsConfig,
       },
-    }
+    };
 
     const server = super.createIOServer(newPort, newOptions) as Server;
 
@@ -33,14 +33,17 @@ export class SocketIOExtendedAdapter extends IoAdapter {
       this.services.authService
         .authorize({
           isPublic: false,
-          accessToken: socket.handshake.auth?.accessToken || socket.handshake.auth?.token || socket.handshake.headers?.["token"],
-          roles: Object.values(UserRole) // required all roles
+          accessToken:
+            socket.handshake.auth?.accessToken ||
+            socket.handshake.auth?.token ||
+            socket.handshake.headers?.['token'],
+          roles: Object.values(UserRole), // required all roles
         })
         .then(({ user, error }) => {
-          socket["user"] = user;
-          next(error ? error : undefined)
+          socket['user'] = user;
+          next(error ? error : undefined);
         });
-    })
+    });
 
     return server;
   }

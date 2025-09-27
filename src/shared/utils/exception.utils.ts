@@ -1,4 +1,8 @@
-import { HttpException, HttpStatus, InternalServerErrorException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 
 export function getExceptionHttpStatus(exception: any): number {
@@ -19,7 +23,7 @@ export function getExceptionMessage(exception: any): string {
     }
   } else if (exception instanceof WsException) {
     const error = exception.getError();
-    if (typeof error === "object") {
+    if (typeof error === 'object') {
       if (error instanceof HttpException) {
         const responseError: string | Record<string, any> = error.getResponse();
         if (typeof responseError === 'string') {
@@ -45,7 +49,7 @@ export function getExceptionMessage(exception: any): string {
 export function getExceptionName(exception: any): string {
   if (exception instanceof WsException) {
     const error = exception.getError();
-    if (typeof error === "object") {
+    if (typeof error === 'object') {
       if (error instanceof Error) {
         return error.name;
       }
@@ -65,6 +69,6 @@ export function parseException(exception: any): {
   return {
     httpStatus: getExceptionHttpStatus(exception),
     message: getExceptionMessage(exception),
-    name: getExceptionName(exception)
-  }
+    name: getExceptionName(exception),
+  };
 }

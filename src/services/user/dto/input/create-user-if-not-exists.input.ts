@@ -11,10 +11,14 @@ import { UserGender, UserRole } from '../../../master/master.constants';
 
 @InputType()
 export class CreateUserIfNotExistsInput {
-  @ValidateIf((dto: CreateUserIfNotExistsInput) => dto.role === UserRole.REGISTERED)
+  @ValidateIf(
+    (dto: CreateUserIfNotExistsInput) => dto.role === UserRole.REGISTERED,
+  )
   @Field({ nullable: true })
   @IsString()
-  @IsNotEmpty({ message: "username is required when create with role REGISTERED" })
+  @IsNotEmpty({
+    message: 'username is required when create with role REGISTERED',
+  })
   username?: string;
 
   @Field(() => UserRole)

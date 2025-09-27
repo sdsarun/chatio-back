@@ -17,7 +17,11 @@ export type ConversationParticipantCreation = Partial<
   >
 >;
 
-@Table({ tableName: 'conversation_participants', updatedAt: false, paranoid: false })
+@Table({
+  tableName: 'conversation_participants',
+  updatedAt: false,
+  paranoid: false,
+})
 export class ConversationParticipant extends Model<
   ConversationParticipant,
   ConversationParticipantCreation

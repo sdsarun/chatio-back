@@ -12,14 +12,19 @@ import { Auth } from './decorators/auth.decorator';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('/google')
   @Auth({ isPublic: true })
-  @ApiInternalServerErrorResponse({ description: 'Something went wrong in our server or bug', })
+  @ApiInternalServerErrorResponse({
+    description: 'Something went wrong in our server or bug',
+  })
   @ApiBadRequestResponse({ description: 'Invalid DTO or mismatch types' })
   @ApiUnauthorizedResponse({ description: 'id token invalid' })
-  @ApiForbiddenResponse({ description: "User account is inactive. Please contact support to activate your account." })
+  @ApiForbiddenResponse({
+    description:
+      'User account is inactive. Please contact support to activate your account.',
+  })
   @ApiCreatedResponse({ description: 'Sign in complete.' })
   async handleGoogleSignIn(
     @Body() body: GoogleSignInDTO,
@@ -29,9 +34,14 @@ export class AuthController {
 
   @Post('/guest')
   @Auth({ isPublic: true })
-  @ApiInternalServerErrorResponse({ description: 'Something went wrong in our server or bug', })
+  @ApiInternalServerErrorResponse({
+    description: 'Something went wrong in our server or bug',
+  })
   @ApiCreatedResponse({ description: 'Sign in complete.' })
-  async handleGuestSignIn(): Promise<{ accessToken: string; accessTokenExpInMS: number }> {
+  async handleGuestSignIn(): Promise<{
+    accessToken: string;
+    accessTokenExpInMS: number;
+  }> {
     return this.authService.guestSignIn();
   }
 }

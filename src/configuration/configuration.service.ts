@@ -86,13 +86,13 @@ export class ConfigurationService {
 
   get databaseConfig(): SequelizeModuleOptions {
     return {
-      dialect: this.config.get("DB_DIALECT"),
-      host: this.config.get("DB_HOST"),
-      port: this.config.get("DB_PORT"),
-      username: this.config.get("DB_USERNAME"),
-      password: this.config.get("DB_PASSWORD"),
-      database: this.config.get("DB_DATABASE"),
-      schema: this.config.get("DB_SCHEMA"),
+      dialect: this.config.get('DB_DIALECT'),
+      host: this.config.get('DB_HOST'),
+      port: this.config.get('DB_PORT'),
+      username: this.config.get('DB_USERNAME'),
+      password: this.config.get('DB_PASSWORD'),
+      database: this.config.get('DB_DATABASE'),
+      schema: this.config.get('DB_SCHEMA'),
       models: DB_MODELS,
       autoLoadModels: true,
       synchronize: false,
@@ -106,44 +106,43 @@ export class ConfigurationService {
       },
       dialectOptions: {
         ssl: this.config.get('DB_SSL') === 'true',
-      }
-    }
+      },
+    };
   }
 
-  get jwtConfig(): { 
+  get jwtConfig(): {
     accessTokenConfig: JwtSignOptions;
   } {
-
     return {
       accessTokenConfig: {
-        secret: this.config.get("JWT_ACCESS_TOKEN_SECRET"),
-        expiresIn: this.config.get("JWT_ACCESS_TOKEN_EXP"),
-        issuer: this.config.get("JWT_ISSUER"),
+        secret: this.config.get('JWT_ACCESS_TOKEN_SECRET'),
+        expiresIn: this.config.get('JWT_ACCESS_TOKEN_EXP'),
+        issuer: this.config.get('JWT_ISSUER'),
       },
-    }
+    };
   }
 
   get oauthGoogleConfig(): {
     clientId: string;
   } {
     return {
-      clientId: this.config.get("OAUTH_GOOGLE_CLIENT_ID")!
-    }
+      clientId: this.config.get('OAUTH_GOOGLE_CLIENT_ID')!,
+    };
   }
 
   get authConfig(): {
     publicApiKey: string;
   } {
     return {
-      publicApiKey: this.config.get("PUBLIC_API_KEY")!,
-    }
+      publicApiKey: this.config.get('PUBLIC_API_KEY')!,
+    };
   }
 
   get cacheConfig(): {
     redisURI: string;
   } {
     return {
-      redisURI: this.config.get("REDIS_URI")!,
-    }
+      redisURI: this.config.get('REDIS_URI')!,
+    };
   }
 }
