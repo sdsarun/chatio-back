@@ -6,7 +6,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique,
+  Unique
 } from 'sequelize-typescript';
 
 export type MasterUserGenderCreation = Partial<Pick<MasterUserGender, 'id' | 'name'>>;

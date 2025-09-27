@@ -10,14 +10,14 @@ import { Sequelize } from 'sequelize-typescript';
       inject: [ConfigurationService],
       useFactory(configurationService: ConfigurationService) {
         return configurationService.databaseConfig;
-      },
-    }),
-  ],
+      }
+    })
+  ]
 })
 export class DatabaseModule {
   constructor(
     private readonly logger: Logger,
-    private readonly sqz: Sequelize,
+    private readonly sqz: Sequelize
   ) {
     this.logger.setContext(DatabaseModule.name);
     this.testConnection();

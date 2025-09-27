@@ -9,7 +9,7 @@ export type ConversationParticipantCreation = Partial<
 @Table({
   tableName: 'conversation_participants',
   updatedAt: false,
-  paranoid: false,
+  paranoid: false
 })
 export class ConversationParticipant extends Model<
   ConversationParticipant,
@@ -18,7 +18,7 @@ export class ConversationParticipant extends Model<
   @Column({
     type: DataType.UUID,
     primaryKey: true,
-    defaultValue: DataType.UUIDV4,
+    defaultValue: DataType.UUIDV4
   })
   id!: string;
 
@@ -26,7 +26,7 @@ export class ConversationParticipant extends Model<
   @Column({
     field: 'conversation_id',
     type: DataType.UUID,
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   conversationId!: string;
 
@@ -34,14 +34,14 @@ export class ConversationParticipant extends Model<
   @Column({
     field: 'user_id',
     type: DataType.UUID,
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   userId!: string;
 
   @CreatedAt
   @Column({
     field: 'joined_at',
-    type: DataType.DATE,
+    type: DataType.DATE
   })
   joinedAt!: Date;
 

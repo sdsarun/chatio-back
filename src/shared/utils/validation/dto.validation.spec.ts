@@ -31,11 +31,11 @@ describe('validateDTO', () => {
 
     const plainDTO: MockDTO = {
       property: '',
-      otherProperty: undefined,
+      otherProperty: undefined
     };
 
     const errros = await validateDTO(plainDTO, MockDTO, {
-      throwErrorOnValidateFailed: false,
+      throwErrorOnValidateFailed: false
     });
     expect(errros).toHaveLength(0);
   });
@@ -48,16 +48,16 @@ describe('validateDTO', () => {
 
     const plainDTO = {
       property: '',
-      otherProperty: undefined,
+      otherProperty: undefined
     };
 
     const errros1 = await validateDTO(plainDTO, undefined as any, {
-      throwErrorOnValidateFailed: false,
+      throwErrorOnValidateFailed: false
     });
     expect(errros1.length).toBeGreaterThan(0);
 
     const errros2 = await validateDTO(plainDTO, UnknownDTO, {
-      throwErrorOnValidateFailed: false,
+      throwErrorOnValidateFailed: false
     });
     expect(errros2.length).toBeGreaterThan(0);
   });

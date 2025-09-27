@@ -8,7 +8,7 @@ import {
   HasMany,
   Model,
   Table,
-  UpdatedAt,
+  UpdatedAt
 } from 'sequelize-typescript';
 import { Conversation } from './conversation.model';
 import { User } from './user.model';
@@ -23,7 +23,7 @@ export class Message extends Model<Message, MessageCreation> {
   @Column({
     type: DataType.UUID,
     primaryKey: true,
-    defaultValue: DataType.UUIDV4,
+    defaultValue: DataType.UUIDV4
   })
   id!: string;
 
@@ -31,7 +31,7 @@ export class Message extends Model<Message, MessageCreation> {
   @Column({
     field: 'sender_id',
     type: DataType.UUID,
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   senderId!: string | null;
 
@@ -39,7 +39,7 @@ export class Message extends Model<Message, MessageCreation> {
   @Column({
     field: 'conversation_id',
     type: DataType.UUID,
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   conversationId!: string | null;
 
@@ -53,7 +53,7 @@ export class Message extends Model<Message, MessageCreation> {
   @UpdatedAt
   @Column({
     field: 'updated_at',
-    type: DataType.DATE,
+    type: DataType.DATE
   })
   updatedAt!: Date;
 

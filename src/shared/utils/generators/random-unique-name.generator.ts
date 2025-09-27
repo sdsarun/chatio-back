@@ -92,7 +92,7 @@ const firstNames: string[] = [
   'christiana',
   'virginia',
   'valentina',
-  'augustus',
+  'augustus'
 ];
 
 const lastNames: string[] = [
@@ -192,7 +192,7 @@ const lastNames: string[] = [
   'young',
   'stone',
   'mccarthy',
-  'wilson',
+  'wilson'
 ];
 
 function getRandomElement<T>(arr: T[]): T {

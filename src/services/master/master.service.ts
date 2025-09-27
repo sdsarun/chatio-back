@@ -24,12 +24,12 @@ export class MasterService {
     private readonly conversationType: typeof MasterConversationType,
 
     @InjectModel(MasterUserGender)
-    private readonly userGender: typeof MasterUserGender,
+    private readonly userGender: typeof MasterUserGender
   ) {}
 
   async findUserRoleById(
     payload: FindUserRoleByIdDTO,
-    options?: ServiceActionOptions,
+    options?: ServiceActionOptions
   ): Promise<UserRole | null> {
     if (options?.validateDTO) {
       await validateDTO(payload, FindUserRoleByIdDTO);
@@ -40,7 +40,7 @@ export class MasterService {
 
   async findUserRoleByName(
     payload: FindUserRoleByNameDTO,
-    options?: ServiceActionOptions,
+    options?: ServiceActionOptions
   ): Promise<UserRole | null> {
     if (options?.validateDTO) {
       await validateDTO(payload, FindUserRoleByNameDTO);
@@ -48,15 +48,15 @@ export class MasterService {
 
     return this.userRole.findOne({
       where: {
-        name: payload.name,
+        name: payload.name
       },
-      raw: true,
+      raw: true
     });
   }
 
   async findUserGenderById(
     payload: FindUserGenderByIdDTO,
-    options?: ServiceActionOptions,
+    options?: ServiceActionOptions
   ): Promise<UserGender | null> {
     if (options?.validateDTO) {
       await validateDTO(payload, FindUserGenderByIdDTO);
@@ -67,7 +67,7 @@ export class MasterService {
 
   async findUserGenderByName(
     payload: FindUserGenderByNameDTO,
-    options?: ServiceActionOptions,
+    options?: ServiceActionOptions
   ): Promise<UserGender | null> {
     if (options?.validateDTO) {
       await validateDTO(payload, FindUserGenderByNameDTO);
@@ -75,22 +75,22 @@ export class MasterService {
 
     return this.userGender.findOne({
       where: {
-        name: payload.name,
+        name: payload.name
       },
-      raw: true,
+      raw: true
     });
   }
 
   async findConservationTypeByName(
     payload: FindConversationTypeByNameDTO,
-    options?: ServiceActionOptions,
+    options?: ServiceActionOptions
   ) {
     if (options?.validateDTO) {
       await validateDTO(payload, FindConversationTypeByNameDTO);
     }
     return this.conversationType.findOne({
       where: { name: payload.name },
-      raw: true,
+      raw: true
     });
   }
 

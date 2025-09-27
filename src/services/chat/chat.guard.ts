@@ -6,7 +6,7 @@ import { Logger } from '../../logger/logger.service';
 export class ChatGuard implements CanActivate {
   constructor(
     private readonly logger: Logger,
-    private readonly reflector: Reflector,
+    private readonly reflector: Reflector
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

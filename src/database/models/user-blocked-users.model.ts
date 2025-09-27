@@ -7,7 +7,7 @@ import {
   ForeignKey,
   Model,
   PrimaryKey,
-  Table,
+  Table
 } from 'sequelize-typescript';
 import { User } from './user.model';
 
@@ -26,7 +26,7 @@ export class UserBlockedUser extends Model<UserBlockedUser, UserBlockedUserCreat
   @Column({
     type: DataType.UUID,
     field: 'user_id',
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   userId!: string;
 
@@ -34,14 +34,14 @@ export class UserBlockedUser extends Model<UserBlockedUser, UserBlockedUserCreat
   @Column({
     type: DataType.UUID,
     field: 'blocked_user_id',
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   blockedUserId!: string;
 
   @CreatedAt
   @Column({
     type: DataType.DATE,
-    field: 'blocked_at',
+    field: 'blocked_at'
   })
   blockedAt!: Date;
 

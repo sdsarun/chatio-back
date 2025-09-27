@@ -8,6 +8,6 @@ import { MasterModule } from '../master/master.module';
 @Module({
   imports: [SequelizeModule.forFeature([User]), MasterModule],
   providers: [UserService, UserResolver],
-  exports: [UserService, SequelizeModule],
+  exports: [UserService, SequelizeModule]
 })
 export class UserModule {}

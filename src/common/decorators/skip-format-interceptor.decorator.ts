@@ -1,5 +1,5 @@
 export const SkipFormatResponseInterceptorPropertyName = Symbol(
-  'SkipFormatResponseInterceptorPropertyName',
+  'SkipFormatResponseInterceptorPropertyName'
 );
 
 export function SkipFormatResponseInterceptor() {

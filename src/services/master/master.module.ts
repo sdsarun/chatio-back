@@ -8,6 +8,6 @@ import { MasterUserGender } from '../../database/models/master-user-gender.model
 @Module({
   imports: [SequelizeModule.forFeature([MasterUserRole, MasterConversationType, MasterUserGender])],
   providers: [MasterService],
-  exports: [MasterService, SequelizeModule],
+  exports: [MasterService, SequelizeModule]
 })
 export class MasterModule {}

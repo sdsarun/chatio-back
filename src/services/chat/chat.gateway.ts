@@ -6,7 +6,7 @@ import {
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer,
+  WebSocketServer
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AllExceptionsFilter } from '../../common/filters/all-exceptions.filter';
@@ -24,19 +24,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(
     private readonly logger: Logger,
-    private readonly chatService: ChatService,
+    private readonly chatService: ChatService
   ) {}
 
   async handleConnection(client: Socket) {
     const { user } = await this.chatService.addUserConnectionInCache({
-      client,
+      client
     });
     this.logger.log(`user:connected: ${user.username}`);
   }
 
   async handleDisconnect(client: Socket) {
     const { user } = await this.chatService.deleteUserConnectionInCache({
-      client,
+      client
     });
     this.logger.log(`user:disconnected: ${user.username}`);
   }
@@ -44,7 +44,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage(ChatEvent.MatchingStranger)
   async handleChatMatchingStranger(@ConnectedSocket() client: Socket) {
     const toMatchingStrangerResult = await this.chatService.toMatchingStranger({
-      client,
+      client
     });
     if (toMatchingStrangerResult.status === 'matched') {
       const userConnections = (await this.chatService.getUserConnections()) || {};
@@ -84,12 +84,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const messageSended = await this.chatService.sendMessage(message);
     const { participants = [] } =
       (await this.chatService.findActiveStrangerConversationByUserId({
-        userId: messageSended.senderId!,
+        userId: messageSended.senderId!
       })) || {};
 
     const newMessagePayload: GetMessagesDTO = {
       conversationId: messageSended.conversationId!,
-      messageId: messageSended.id,
+      messageId: messageSended.id
     };
 
     const newMessages = await this.chatService.getMessages(newMessagePayload);

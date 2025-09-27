@@ -6,7 +6,7 @@ import {
   ForeignKey,
   Model,
   PrimaryKey,
-  Table,
+  Table
 } from 'sequelize-typescript';
 import { Message } from './message.model';
 import { User } from './user.model';
@@ -24,7 +24,7 @@ export class MessageRead extends Model<MessageRead, MessageReadCreation> {
   @Column({
     field: 'message_id',
     type: DataType.UUID,
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   messageId!: string | null;
 
@@ -32,7 +32,7 @@ export class MessageRead extends Model<MessageRead, MessageReadCreation> {
   @Column({
     field: 'user_id',
     type: DataType.UUID,
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   userId!: string | null;
 

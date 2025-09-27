@@ -11,7 +11,7 @@ export class LoggerInterceptor implements NestInterceptor {
 
   intercept(
     context: ExecutionContext,
-    next: CallHandler<any>,
+    next: CallHandler<any>
   ): Observable<any> | Promise<Observable<any>> {
     const type: ContextType | 'graphql' = context.getType();
 
@@ -39,7 +39,7 @@ export class LoggerInterceptor implements NestInterceptor {
       operation: info?.operation?.operation,
       fieldName: info?.fieldName,
       variables: this.sanitize(gqlContext.getArgs()),
-      headers: request?.headers ? this.sanitize(request.headers) : {},
+      headers: request?.headers ? this.sanitize(request.headers) : {}
     };
 
     return next.handle().pipe(
@@ -48,9 +48,9 @@ export class LoggerInterceptor implements NestInterceptor {
         this.logger.log(
           {
             request: requestInfo,
-            response: responseInfo,
+            response: responseInfo
           },
-          requestId,
+          requestId
         );
       }),
       catchError((error: Error) => {
@@ -61,14 +61,14 @@ export class LoggerInterceptor implements NestInterceptor {
             error: {
               name: error?.name,
               status: getExceptionHttpStatus(error),
-              message: getExceptionMessage(error),
-            },
+              message: getExceptionMessage(error)
+            }
           },
           error?.stack,
-          requestId,
+          requestId
         );
         return throwError(() => error);
-      }),
+      })
     );
   }
 
@@ -86,7 +86,7 @@ export class LoggerInterceptor implements NestInterceptor {
       url: request.originalUrl,
       headers: this.sanitize(request.headers),
       body: this.sanitize(request.body),
-      query: request.query,
+      query: request.query
     };
 
     return next.handle().pipe(
@@ -95,9 +95,9 @@ export class LoggerInterceptor implements NestInterceptor {
         this.logger.log(
           {
             request: requestInfo,
-            response: responseInfo,
+            response: responseInfo
           },
-          requestId,
+          requestId
         );
       }),
       catchError((error: Error) => {
@@ -108,14 +108,14 @@ export class LoggerInterceptor implements NestInterceptor {
             error: {
               name: error?.name,
               status: getExceptionHttpStatus(error),
-              message: getExceptionMessage(error),
-            },
+              message: getExceptionMessage(error)
+            }
           },
           error?.stack,
-          requestId,
+          requestId
         );
         return throwError(() => error);
-      }),
+      })
     );
   }
 

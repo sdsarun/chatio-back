@@ -14,7 +14,7 @@ describe('isDeepEmpty', () => {
       [{ a: 'text' }, false, 'object with string value'],
       [{ a: true }, false, 'object with true value'],
       [{ a: {} }, true, 'object with empty object'],
-      [{ a: [] }, true, 'object with empty array'],
+      [{ a: [] }, true, 'object with empty array']
     ])('should return %p for %s', (testValue, expected, description) => {
       expect(isDeepEmpty(testValue)).toBe(expected);
     });
@@ -30,7 +30,7 @@ describe('isDeepEmpty', () => {
       [{ a: { b: '' } }, true, 'nested object with empty string'],
       [{ a: { b: 1 } }, false, 'nested object with number value'],
       [{ a: { b: 'text' } }, false, 'nested object with string value'],
-      [{ a: { b: true } }, false, 'nested object with true value'],
+      [{ a: { b: true } }, false, 'nested object with true value']
     ])('should return %p for %s', (testValue, expected, description) => {
       expect(isDeepEmpty(testValue)).toBe(expected);
     });
@@ -45,7 +45,7 @@ describe('isDeepEmpty', () => {
       [{ a: undefined, b: 1 }, false, 'undefined and truthy value'],
       [{ a: null, b: 'text' }, false, 'null and truthy value'],
       [{ a: {}, b: true }, false, 'empty object and truthy value'],
-      [{ a: {}, b: 1 }, false, 'empty object and number value'],
+      [{ a: {}, b: 1 }, false, 'empty object and number value']
     ])('should return %p for %s', (testValue, expected, description) => {
       expect(isDeepEmpty(testValue)).toBe(expected);
     });
@@ -67,7 +67,7 @@ describe('isDeepEmpty', () => {
       [{ a: [{ b: 1 }] }, false, 'array with object containing truthy value'],
       [{ a: [{ b: undefined }] }, true, 'array with object containing undefined'],
       [{ a: [undefined, null, 0, ''] }, true, 'array with multiple falsy values'],
-      [{ a: [undefined, null, 0, '', 1] }, false, 'array with falsy and one truthy value'], // failed
+      [{ a: [undefined, null, 0, '', 1] }, false, 'array with falsy and one truthy value'] // failed
     ])('should return %p for %s', (testValue, expected, description) => {
       expect(isDeepEmpty(testValue)).toBe(expected);
     });
@@ -85,7 +85,7 @@ describe('isDeepEmpty', () => {
       [{ a: { b: { c: 'text' } } }, false, 'deeply nested object with string'],
       [{ a: { b: { c: true } } }, false, 'deeply nested object with true'],
       [{ a: { b: { c: {} } }, d: undefined }, true, 'multiple branches with empty values'],
-      [{ a: { b: { c: {} } }, d: 1 }, false, 'one branch empty, one with truthy value'],
+      [{ a: { b: { c: {} } }, d: 1 }, false, 'one branch empty, one with truthy value']
     ])('should return %p for %s', (testValue, expected, description) => {
       expect(isDeepEmpty(testValue)).toBe(expected);
     });
@@ -102,13 +102,13 @@ describe('isDeepEmpty', () => {
       [
         { a: { b: { c: {} } }, d: [0, false, ''] },
         true,
-        'deeply nested empty with array of falsy values',
+        'deeply nested empty with array of falsy values'
       ],
       [
         { a: { b: { c: {} } }, d: [0, false, '', 1] },
         false,
-        'deeply nested empty with array containing truthy value',
-      ],
+        'deeply nested empty with array containing truthy value'
+      ]
     ])('should return %p for %s', (testValue, expected, description) => {
       expect(isDeepEmpty(testValue)).toBe(expected);
     });
@@ -125,14 +125,14 @@ describe('isDeepEmpty', () => {
       [
         { a: [], b: {}, c: undefined, d: null, e: 0, f: '', g: false },
         true,
-        'object with all types of empty values',
+        'object with all types of empty values'
       ],
       [{ a: [[[{}]]] }, true, 'deeply nested empty arrays and objects'],
       [{ a: [[[{ b: 1 }]]] }, false, 'deeply nested arrays with one truthy value'],
       [{ a: Array(10).fill(undefined) }, true, 'large array of undefined values'],
       [{ a: Array(10).fill(null) }, true, 'large array of null values'],
       [{ a: Array(10).fill({}) }, true, 'large array of empty objects'],
-      [{ a: Array(9).fill(0).concat([1]) }, false, 'large array with one truthy value at the end'],
+      [{ a: Array(9).fill(0).concat([1]) }, false, 'large array with one truthy value at the end']
     ])('should return %p for %s', (testValue: any, expected, description) => {
       expect(isDeepEmpty(testValue)).toBe(expected);
     });

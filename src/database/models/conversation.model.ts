@@ -6,7 +6,7 @@ import {
   DeletedAt,
   ForeignKey,
   Model,
-  Table,
+  Table
 } from 'sequelize-typescript';
 import { MasterConversationType } from './master-conversation-type.model';
 
@@ -19,7 +19,7 @@ export class Conversation extends Model<Conversation, ConversationCreation> {
   @Column({
     type: DataType.UUID,
     primaryKey: true,
-    defaultValue: DataType.UUIDV4,
+    defaultValue: DataType.UUIDV4
   })
   id!: string;
 
@@ -27,14 +27,14 @@ export class Conversation extends Model<Conversation, ConversationCreation> {
   @Column({
     field: 'conversation_type_id',
     type: DataType.UUID,
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   conversationTypeId!: string;
 
   @CreatedAt
   @Column({
     field: 'created_at',
-    type: DataType.DATE,
+    type: DataType.DATE
   })
   createdAt!: Date;
 

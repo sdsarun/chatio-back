@@ -18,7 +18,7 @@ import { UpdateUserArgs } from './dto/args/update-user.args';
 export class UserService {
   constructor(
     @InjectModel(UserModel) private readonly user: typeof UserModel,
-    private readonly masterService: MasterService,
+    private readonly masterService: MasterService
   ) {}
 
   async getUser(payload: GetUserArgs, options?: ServiceActionOptions): Promise<User | null> {
@@ -32,7 +32,7 @@ export class UserService {
 
     const queryConditions: WhereOptions<UserModel>[] = [];
     const whereOptions: WhereOptions<UserModel> = {
-      [Op.and]: queryConditions,
+      [Op.and]: queryConditions
     };
 
     if (payload?.userId) {
@@ -51,7 +51,7 @@ export class UserService {
       where: whereOptions,
       raw: true,
       include: { all: true },
-      nest: true,
+      nest: true
     });
 
     if (!user) {
@@ -74,14 +74,14 @@ export class UserService {
   // create user with username and role, (gender, aka are optional)
   async createUserIfNotExists(
     payload: CreateUserIfNotExistsInput,
-    options?: ServiceActionOptions,
+    options?: ServiceActionOptions
   ): Promise<User> {
     if (options?.validateDTO) {
       await validateDTO(payload, CreateUserIfNotExistsInput);
     }
 
     const identifyRole = await this.masterService.findUserRoleByName({
-      name: payload.role,
+      name: payload.role
     });
 
     if (!identifyRole) {
@@ -92,7 +92,7 @@ export class UserService {
     let identifyGender: UserGender | null = null;
     if (payload?.gender) {
       identifyGender = await this.masterService.findUserGenderByName({
-        name: payload.gender,
+        name: payload.gender
       });
 
       if (!identifyGender) {
@@ -104,7 +104,7 @@ export class UserService {
       username: undefined,
       aka: undefined,
       userRoleId: identifyRole.id,
-      userGenderId: identifyGender?.id,
+      userGenderId: identifyGender?.id
     };
 
     switch (payload.role) {
@@ -127,7 +127,7 @@ export class UserService {
     }
 
     const [userCreated] = await this.user.upsert(createUserPayload, {
-      returning: true,
+      returning: true
     });
 
     return this.getUser({ userId: userCreated.id }, options) as Promise<User>;
@@ -143,12 +143,12 @@ export class UserService {
     const updateUserPayload: Omit<UserCreation, 'id'> = {
       aka: updateUserData?.aka,
       userGenderId: updateUserData?.userGenderId,
-      userRoleId: updateUserData?.userRoleId,
+      userRoleId: updateUserData?.userRoleId
     };
 
     if (updateUserData.gender) {
       const identifyGender = await this.masterService.findUserGenderByName({
-        name: updateUserData.gender,
+        name: updateUserData.gender
       });
 
       if (!identifyGender) {
@@ -159,7 +159,7 @@ export class UserService {
     }
 
     const [numOfUpdatedUsers] = await this.user.update(updateUserPayload, {
-      where: { id },
+      where: { id }
     });
 
     if (numOfUpdatedUsers === 0) {

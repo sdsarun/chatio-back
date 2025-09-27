@@ -13,7 +13,7 @@ export class SocketIOExtendedAdapter extends IoAdapter {
       configurationService: ConfigurationService;
       authService: AuthService;
       logger: Logger;
-    },
+    }
   ) {
     super(services.app);
   }
@@ -23,8 +23,8 @@ export class SocketIOExtendedAdapter extends IoAdapter {
     const newOptions: Partial<ServerOptions> = {
       ...options,
       cors: {
-        ...this.services.configurationService.corsConfig,
-      },
+        ...this.services.configurationService.corsConfig
+      }
     };
 
     const server = super.createIOServer(newPort, newOptions) as Server;
@@ -37,7 +37,7 @@ export class SocketIOExtendedAdapter extends IoAdapter {
             socket.handshake.auth?.accessToken ||
             socket.handshake.auth?.token ||
             socket.handshake.headers?.['token'],
-          roles: Object.values(UserRole), // required all roles
+          roles: Object.values(UserRole) // required all roles
         })
         .then(({ user, error }) => {
           socket['user'] = user;

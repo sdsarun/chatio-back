@@ -20,7 +20,7 @@ const DB_MODELS: string[] | ModelCtor[] = [
   MessageRead,
   Message,
   UserConnection,
-  UserBlockedUser,
+  UserBlockedUser
 ];
 
 export default DB_MODELS;

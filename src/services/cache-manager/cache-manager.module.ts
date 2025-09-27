@@ -17,18 +17,18 @@ import { CacheManagerService } from './cache-manager.service';
           stores: [
             new Keyv({
               store: new CacheableMemory({ lruSize: 5000 }),
-              namespace: 'chatio',
+              namespace: 'chatio'
             }),
             createRedisKeyv(configurationService.cacheConfig.redisURI, {
-              namespace: 'chatio',
-            }),
+              namespace: 'chatio'
+            })
           ],
-          refreshAllStores: true,
+          refreshAllStores: true
         };
-      },
-    }),
+      }
+    })
   ],
   providers: [CacheManagerService],
-  exports: [CacheManagerService],
+  exports: [CacheManagerService]
 })
 export class CacheManagerModule {}

@@ -4,7 +4,7 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
-  ApiUnauthorizedResponse,
+  ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { GoogleSignInDTO } from './dto/google-signin.dto';
@@ -17,16 +17,16 @@ export class AuthController {
   @Post('/google')
   @Auth({ isPublic: true })
   @ApiInternalServerErrorResponse({
-    description: 'Something went wrong in our server or bug',
+    description: 'Something went wrong in our server or bug'
   })
   @ApiBadRequestResponse({ description: 'Invalid DTO or mismatch types' })
   @ApiUnauthorizedResponse({ description: 'id token invalid' })
   @ApiForbiddenResponse({
-    description: 'User account is inactive. Please contact support to activate your account.',
+    description: 'User account is inactive. Please contact support to activate your account.'
   })
   @ApiCreatedResponse({ description: 'Sign in complete.' })
   async handleGoogleSignIn(
-    @Body() body: GoogleSignInDTO,
+    @Body() body: GoogleSignInDTO
   ): Promise<{ accessToken: string; accessTokenExpInMS: number }> {
     return this.authService.googleSignIn(body);
   }
@@ -34,7 +34,7 @@ export class AuthController {
   @Post('/guest')
   @Auth({ isPublic: true })
   @ApiInternalServerErrorResponse({
-    description: 'Something went wrong in our server or bug',
+    description: 'Something went wrong in our server or bug'
   })
   @ApiCreatedResponse({ description: 'Sign in complete.' })
   async handleGuestSignIn(): Promise<{

@@ -5,13 +5,13 @@ import { ClassConstructor, plainToInstance } from 'class-transformer';
 export async function validateDTO<T extends object>(
   plainDTO: T,
   classDTO: ClassConstructor<T>,
-  options?: ServiceActionOptions,
+  options?: ServiceActionOptions
 ): Promise<ValidationError[]> {
   const ensurePlainToInstanceDTO = isInstance(plainDTO, classDTO)
     ? plainDTO
     : plainToInstance(classDTO, plainDTO);
   const errors: ValidationError[] = await validate(ensurePlainToInstanceDTO, {
-    whitelist: true,
+    whitelist: true
   });
 
   if (errors.length > 0) {

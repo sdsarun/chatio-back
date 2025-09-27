@@ -13,8 +13,8 @@ export function IsTrueOrFalseString(validationOptions?: ValidationOptions) {
         },
         defaultMessage(args: ValidationArguments) {
           return `${args.property} must be a string containing "true" or "false".`;
-        },
-      },
+        }
+      }
     });
   };
 }

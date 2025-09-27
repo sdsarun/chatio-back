@@ -4,7 +4,7 @@ import {
   HttpException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { ConfigurationService } from '../../configuration/configuration.service';
@@ -28,12 +28,12 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly http: HttpService,
     private readonly configurationService: ConfigurationService,
-    private readonly userService: UserService,
+    private readonly userService: UserService
   ) {}
 
   async googleSignIn(
     payload: GoogleSignInDTO,
-    options?: ServiceActionOptions,
+    options?: ServiceActionOptions
   ): Promise<{
     accessToken: string;
     accessTokenExpInMS: number;
@@ -49,17 +49,17 @@ export class AuthService {
 
       const userInfo = await this.userService.createUserIfNotExists({
         username: email,
-        role: UserRole.REGISTERED,
+        role: UserRole.REGISTERED
       });
 
       if (!userInfo.isActive) {
         throw new ForbiddenException(
-          'User account is inactive. Please contact support to activate your account.',
+          'User account is inactive. Please contact support to activate your account.'
         );
       }
 
       const tokenPayload: AccessTokenPayload = {
-        userInfo,
+        userInfo
       };
 
       const accessToken = await this.tokenService.generateAccessToken(tokenPayload);
@@ -67,7 +67,7 @@ export class AuthService {
 
       return {
         accessToken,
-        accessTokenExpInMS: accessTokenExpInMS * 1000,
+        accessTokenExpInMS: accessTokenExpInMS * 1000
       };
     } catch (error) {
       if (isAxiosError(error)) {
@@ -86,11 +86,11 @@ export class AuthService {
     this.logger.setContext(this.googleSignIn.name);
     try {
       const userInfo = await this.userService.createUserIfNotExists({
-        role: UserRole.GUEST,
+        role: UserRole.GUEST
       });
 
       const tokenPayload: AccessTokenPayload = {
-        userInfo,
+        userInfo
       };
 
       const accessToken = await this.tokenService.generateAccessToken(tokenPayload);
@@ -98,7 +98,7 @@ export class AuthService {
 
       return {
         accessToken,
-        accessTokenExpInMS: accessTokenExpInMS * 1000,
+        accessTokenExpInMS: accessTokenExpInMS * 1000
       };
     } catch (error) {
       this.logger.error(error);
@@ -111,8 +111,8 @@ export class AuthService {
     try {
       const { data } = await firstValueFrom(
         this.http.get<GoogleIdTokenPayload>('https://oauth2.googleapis.com/tokeninfo', {
-          params: { id_token: idToken },
-        }),
+          params: { id_token: idToken }
+        })
       );
 
       const validIssuers = ['accounts.google.com', 'https://accounts.google.com'];
@@ -123,7 +123,7 @@ export class AuthService {
 
       if (data.aud !== this.configurationService.oauthGoogleConfig.clientId) {
         throw new Error(
-          `Invalid audience: expected "${this.configurationService.oauthGoogleConfig.clientId}", got "${data.aud}"`,
+          `Invalid audience: expected "${this.configurationService.oauthGoogleConfig.clientId}", got "${data.aud}"`
         );
       }
 
@@ -143,7 +143,7 @@ export class AuthService {
     },
     options?: {
       skipCheckPublicApiKey?: boolean;
-    },
+    }
   ): Promise<
     | { success: false; error: HttpException; user: null }
     | { success: true; error: null; user: User | null }
@@ -161,7 +161,7 @@ export class AuthService {
         return {
           success: false,
           error: new UnauthorizedException('Invalid public api key.'),
-          user: null,
+          user: null
         };
       }
 
@@ -173,9 +173,9 @@ export class AuthService {
       return {
         success: false,
         error: new UnauthorizedException(
-          'Missing or malformed access token. Please include a valid token in the Authorization header using the format: Bearer <token>.',
+          'Missing or malformed access token. Please include a valid token in the Authorization header using the format: Bearer <token>.'
         ),
-        user: null,
+        user: null
       };
     }
 
@@ -183,11 +183,11 @@ export class AuthService {
       const { userInfo: userInfoFromToken } =
         await this.tokenService.verifyAccessToken<VerifiedAccessTokenPayload>(accessToken);
       this.logger.debug(
-        `Token verified successfully for user ID: ${userInfoFromToken?.id || 'unknown'}`,
+        `Token verified successfully for user ID: ${userInfoFromToken?.id || 'unknown'}`
       );
 
       const userInfoFromDB = await this.userService.getUser({
-        userId: userInfoFromToken.id,
+        userId: userInfoFromToken.id
       });
 
       if (!userInfoFromDB) {
@@ -195,7 +195,7 @@ export class AuthService {
         return {
           success: false,
           error: new NotFoundException(`User with ID ${userInfoFromToken.id} does not exist.`),
-          user: null,
+          user: null
         };
       }
 
@@ -206,7 +206,7 @@ export class AuthService {
         return {
           success: false,
           error: new ForbiddenException('Your account does not have a role assigned. Contact support.'),
-          user: null,
+          user: null
         };
       }
 
@@ -215,9 +215,9 @@ export class AuthService {
         return {
           success: false,
           error: new ForbiddenException(
-            `Access denied. Your role "${userRole}" does not have permission to access this resource.`,
+            `Access denied. Your role "${userRole}" does not have permission to access this resource.`
           ),
-          user: null,
+          user: null
         };
       }
 
@@ -227,7 +227,7 @@ export class AuthService {
       return {
         success: false,
         error: new UnauthorizedException('Invalid or expired access token. Please log in again.'),
-        user: null,
+        user: null
       };
     }
   }

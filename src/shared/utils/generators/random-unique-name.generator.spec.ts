@@ -2,7 +2,7 @@ import randomUniqueName from './random-unique-name.generator';
 import { randomUUID } from 'node:crypto';
 
 jest.mock('node:crypto', () => ({
-  randomUUID: jest.fn(),
+  randomUUID: jest.fn()
 }));
 
 describe('randomUniqueName', () => {

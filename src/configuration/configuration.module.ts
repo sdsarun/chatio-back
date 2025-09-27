@@ -8,12 +8,12 @@ import { validateEnvironmentVariables } from '../shared/utils/validation/env.val
   imports: [
     ConfigModule.forRoot({
       cache: true,
-      envFilePath: ['.env', '.env.dev', '.env.prod'],
+      envFilePath: ['.env', '.env.local', '.env.dev', '.env.prod'],
       expandVariables: true,
-      validate: validateEnvironmentVariables,
-    }),
+      validate: validateEnvironmentVariables
+    })
   ],
   providers: [ConfigurationService],
-  exports: [ConfigurationService],
+  exports: [ConfigurationService]
 })
 export class ConfigurationModule {}

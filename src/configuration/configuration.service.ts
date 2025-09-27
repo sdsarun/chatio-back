@@ -1,7 +1,7 @@
 import { Injectable, ValidationPipeOptions, VersioningOptions, VersioningType } from '@nestjs/common';
 import {
   CorsOptions,
-  CorsOptionsDelegate,
+  CorsOptionsDelegate
 } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { ConfigService } from '@nestjs/config';
 import { Environment, EnvironmentVariables } from '../shared/constants/env.constant';
@@ -23,7 +23,7 @@ export class ConfigurationService {
   } {
     return {
       environment: this.config.get('NODE_ENV') ?? Environment.Development,
-      port: this.config.get('PORT') ?? 5432,
+      port: this.config.get('PORT') ?? 5432
     };
   }
 
@@ -53,7 +53,7 @@ export class ConfigurationService {
       title: 'Example App',
       description: 'Example description.',
       version: '0.0.1',
-      endpointName: 'docs',
+      endpointName: 'docs'
     };
   }
 
@@ -61,16 +61,16 @@ export class ConfigurationService {
     return {
       transform: true,
       transformOptions: {
-        enableImplicitConversion: true,
+        enableImplicitConversion: true
       },
-      whitelist: true,
+      whitelist: true
     };
   }
 
   get versioningConfig(): VersioningOptions {
     return {
       type: VersioningType.URI,
-      defaultVersion: '1',
+      defaultVersion: '1'
     };
   }
 
@@ -92,11 +92,11 @@ export class ConfigurationService {
         paranoid: true,
         updatedAt: 'updated_at',
         createdAt: 'created_at',
-        deletedAt: 'deleted_at',
+        deletedAt: 'deleted_at'
       },
       dialectOptions: {
-        ssl: this.config.get('DB_SSL') === 'true',
-      },
+        ssl: this.config.get('DB_SSL') === 'true'
+      }
     };
   }
 
@@ -107,8 +107,8 @@ export class ConfigurationService {
       accessTokenConfig: {
         secret: this.config.get('JWT_ACCESS_TOKEN_SECRET'),
         expiresIn: this.config.get('JWT_ACCESS_TOKEN_EXP'),
-        issuer: this.config.get('JWT_ISSUER'),
-      },
+        issuer: this.config.get('JWT_ISSUER')
+      }
     };
   }
 
@@ -116,7 +116,7 @@ export class ConfigurationService {
     clientId: string;
   } {
     return {
-      clientId: this.config.get('OAUTH_GOOGLE_CLIENT_ID')!,
+      clientId: this.config.get('OAUTH_GOOGLE_CLIENT_ID')!
     };
   }
 
@@ -124,7 +124,7 @@ export class ConfigurationService {
     publicApiKey: string;
   } {
     return {
-      publicApiKey: this.config.get('PUBLIC_API_KEY')!,
+      publicApiKey: this.config.get('PUBLIC_API_KEY')!
     };
   }
 
@@ -132,7 +132,7 @@ export class ConfigurationService {
     redisURI: string;
   } {
     return {
-      redisURI: this.config.get('REDIS_URI')!,
+      redisURI: this.config.get('REDIS_URI')!
     };
   }
 }

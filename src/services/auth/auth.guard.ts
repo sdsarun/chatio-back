@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private readonly logger: Logger,
     private readonly reflector: Reflector,
-    private readonly authService: AuthService,
+    private readonly authService: AuthService
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
 
     const type = context.getType<GqlContextType>();
     const { success, error, user } = await this.authService.authorize(
-      this.getAuthMetadataFromContext(context),
+      this.getAuthMetadataFromContext(context)
     );
     if (!success) {
       if (type === 'ws') throw new WsException(error);
@@ -82,14 +82,14 @@ export class AuthGuard implements CanActivate {
 
       const roles = this.reflector.getAllAndMerge<UserRole[]>(AUTH_ROLES_KEY, [
         context.getHandler(),
-        context.getClass(),
+        context.getClass()
       ]);
 
       return {
         roles,
         isPublic,
         accessToken,
-        publicApiKey,
+        publicApiKey
       };
     } catch (error) {
       this.logger.error(error);

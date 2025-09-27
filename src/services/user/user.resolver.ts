@@ -20,7 +20,7 @@ export class UserResolver {
   @Mutation(() => User)
   createUserIfNotExists(
     @Args('createUserIfNotExistsInput')
-    createUserIfNotExistsInput: CreateUserIfNotExistsInput,
+    createUserIfNotExistsInput: CreateUserIfNotExistsInput
   ) {
     return this.userService.createUserIfNotExists(createUserIfNotExistsInput);
   }

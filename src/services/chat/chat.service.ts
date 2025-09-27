@@ -51,7 +51,7 @@ export class ChatService {
     private readonly userService: UserService,
     private readonly cache: CacheManagerService,
     private readonly masterService: MasterService,
-    private readonly sqz: Sequelize,
+    private readonly sqz: Sequelize
   ) {}
 
   extractUserFromClient(client: Socket): User {
@@ -60,7 +60,7 @@ export class ChatService {
 
   async toMatchingStranger(
     payload: ToMatchingStrangerDTO,
-    options?: Pick<TransactionalServiceActionOptions, 'transaction'>,
+    options?: Pick<TransactionalServiceActionOptions, 'transaction'>
   ): Promise<{
     status: 'matching' | 'matched' | 'in_conversation';
     conversation?: Conversation;
@@ -74,16 +74,16 @@ export class ChatService {
 
     const strangerConversation = await this.findActiveStrangerConversationByUserId(
       { userId: user.id },
-      options,
+      options
     );
     if (strangerConversation) {
       await Promise.all(
-        strangerConversation.participants.map((record) => this.leftConversation(record, options)),
+        strangerConversation.participants.map((record) => this.leftConversation(record, options))
       );
     }
 
     const strangerQueue = await this.cache.manager.get<StrangerQueue>(
-      ChatCacheKey.MatchingStrangerQueue,
+      ChatCacheKey.MatchingStrangerQueue
     );
     if (strangerQueue && Object.keys(strangerQueue).length > 0 && !strangerQueue?.[user.id]) {
       const stranger = Object.values(strangerQueue)[0];
@@ -93,24 +93,24 @@ export class ChatService {
         async (transaction) => {
           const createdConversation = await this.createConversation(
             { conversationTypeName: ConversationType.STRANGER_MESSAGE },
-            { transaction },
+            { transaction }
           );
           const createdParticipants = await this.joinConversation(
             [
               { conversationId: createdConversation.id, userId: user.id },
               {
                 conversationId: createdConversation.id,
-                userId: stranger.userId,
-              },
+                userId: stranger.userId
+              }
             ],
-            { transaction },
+            { transaction }
           );
 
           return {
             conversation: createdConversation,
-            participants: createdParticipants,
+            participants: createdParticipants
           };
-        },
+        }
       );
 
       await Promise.all(participants.map((record) => this.deleteUserMatchingInCache(record)));
@@ -123,14 +123,14 @@ export class ChatService {
 
   async createConversation(
     payload: CreateConversationDTO,
-    options?: TransactionalServiceActionOptions,
+    options?: TransactionalServiceActionOptions
   ): Promise<Conversation> {
     if (options?.validateDTO) {
       await validateDTO(payload, CreateConversationDTO);
     }
     const { conversationTypeName } = payload;
     const selectedConversationType = await this.masterService.findConservationTypeByName({
-      name: conversationTypeName,
+      name: conversationTypeName
     });
     if (!selectedConversationType) {
       throw new WsException('Conversation type is missing.');
@@ -139,26 +139,26 @@ export class ChatService {
       { conversationTypeId: selectedConversationType.id },
       {
         raw: true,
-        transaction: options?.transaction,
-      },
+        transaction: options?.transaction
+      }
     );
   }
 
   async joinConversation(
     payload: JoinConversationDTO[],
-    options?: TransactionalServiceActionOptions,
+    options?: TransactionalServiceActionOptions
   ): Promise<ConversationParticipant[]> {
     if (options?.validateDTO) {
       await Promise.all(payload.map((payloadItem) => validateDTO(payloadItem, JoinConversationDTO)));
     }
     return this.conversationParticipant.bulkCreate(payload, {
-      transaction: options?.transaction,
+      transaction: options?.transaction
     });
   }
 
   async leftConversation(
     payload: LeftConversationDTO,
-    options?: TransactionalServiceActionOptions,
+    options?: TransactionalServiceActionOptions
   ): Promise<ConversationParticipant[]> {
     if (options?.validateDTO) {
       await validateDTO(payload, LeftConversationDTO, options);
@@ -170,12 +170,12 @@ export class ChatService {
         where: {
           conversationId: payload.conversationId,
           ...(payload?.userId && {
-            userId: payload?.userId,
-          }),
+            userId: payload?.userId
+          })
         },
         transaction: options?.transaction,
-        returning: true,
-      },
+        returning: true
+      }
     );
 
     return updated;
@@ -192,7 +192,7 @@ export class ChatService {
     userConnections[user.id] = {
       clientId: client.id,
       userId: user.id,
-      username: user.username,
+      username: user.username
     };
     this.cache.manager.set<UserConnections>(ChatCacheKey.UserConnections, userConnections);
     return { user };
@@ -230,7 +230,7 @@ export class ChatService {
 
   async findAllConversationByUserId(
     payload: FindAllConversationByUserIdDTO,
-    options?: TransactionalServiceActionOptions,
+    options?: TransactionalServiceActionOptions
   ): Promise<ConversationParticipant[]> {
     if (options?.validateDTO) {
       await validateDTO(payload, FindAllConversationByUserIdDTO);
@@ -258,20 +258,20 @@ export class ChatService {
             {
               model: this.conversationType,
               required: true,
-              where: whereConversationType,
-            },
-          ],
-        },
+              where: whereConversationType
+            }
+          ]
+        }
       ],
       nest: true,
       raw: true,
-      transaction: options?.transaction,
+      transaction: options?.transaction
     });
   }
 
   async findActiveStrangerConversationByUserId(
     payload: FindActiveStrangerConversationByUserIdDTO,
-    options?: TransactionalServiceActionOptions,
+    options?: TransactionalServiceActionOptions
   ): Promise<{
     conversation: Conversation;
     participants: ConversationParticipant[];
@@ -285,7 +285,7 @@ export class ChatService {
     const activeConversation = await this.conversationParticipant.findOne({
       where: {
         userId,
-        leftAt: { [Op.is]: null },
+        leftAt: { [Op.is]: null }
       },
       include: [
         {
@@ -296,15 +296,15 @@ export class ChatService {
               model: this.conversationType,
               required: true,
               where: {
-                name: ConversationType.STRANGER_MESSAGE,
-              },
-            },
-          ],
-        },
+                name: ConversationType.STRANGER_MESSAGE
+              }
+            }
+          ]
+        }
       ],
       raw: true,
       nest: true,
-      transaction: options?.transaction,
+      transaction: options?.transaction
     });
 
     if (!activeConversation) {
@@ -317,28 +317,28 @@ export class ChatService {
         include: { all: true, nested: true },
         raw: true,
         nest: true,
-        transaction: options?.transaction,
+        transaction: options?.transaction
       }),
       this.conversationParticipant.findAll({
         where: {
-          conversationId: activeConversation?.conversationId,
+          conversationId: activeConversation?.conversationId
         },
         include: { all: true, nested: true },
         raw: true,
         nest: true,
-        transaction: options?.transaction,
-      }),
+        transaction: options?.transaction
+      })
     ]);
 
     return {
       conversation: conversation!,
-      participants,
+      participants
     };
   }
 
   async getMessages(
     payload: GetMessagesDTO,
-    options?: TransactionalServiceActionOptions,
+    options?: TransactionalServiceActionOptions
   ): Promise<Message[]> {
     if (options?.validateDTO) {
       await validateDTO(payload, GetMessagesDTO);
@@ -347,7 +347,7 @@ export class ChatService {
     const { messageId, requesterId, conversationId, offset, limit } = payload;
 
     const whereMessage: WhereOptions<Message> = {
-      conversationId,
+      conversationId
     };
 
     if (messageId) {
@@ -362,19 +362,19 @@ export class ChatService {
       where: whereMessage,
       include: {
         all: true,
-        nested: true,
+        nested: true
       },
       nest: true,
       transaction: options?.transaction,
       order: [['sent_at', 'DESC']],
       offset,
-      limit,
+      limit
     });
   }
 
   async sendMessage(
     payload: SendMessageDTO,
-    options?: TransactionalServiceActionOptions,
+    options?: TransactionalServiceActionOptions
   ): Promise<Message> {
     if (options?.validateDTO) {
       await validateDTO(payload, SendMessageDTO);
@@ -382,7 +382,7 @@ export class ChatService {
 
     return this.message.create(payload, {
       raw: true,
-      transaction: options?.transaction,
+      transaction: options?.transaction
     });
   }
 }

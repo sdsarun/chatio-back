@@ -6,7 +6,7 @@ import { ConfigurationService } from '../../configuration/configuration.service'
 export class TokenService {
   constructor(
     private readonly configurationService: ConfigurationService,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   decode<T extends { exp: number }>(token: string): T {

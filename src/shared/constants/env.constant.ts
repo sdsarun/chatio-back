@@ -4,7 +4,7 @@ import { IsTrueOrFalseString } from '../../common/validators/is-true-or-false-st
 export enum Environment {
   Development = 'development',
   Production = 'production',
-  Test = 'test',
+  Test = 'test'
 }
 
 export class EnvironmentVariables {

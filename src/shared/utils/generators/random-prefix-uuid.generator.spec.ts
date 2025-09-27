@@ -2,7 +2,7 @@ import { randomPrefixUUID } from './random-prefix-uuid.generator'; // Adjust the
 import { randomUUID } from 'node:crypto';
 
 jest.mock('node:crypto', () => ({
-  randomUUID: jest.fn(),
+  randomUUID: jest.fn()
 }));
 
 describe('randomPrefixUUID', () => {

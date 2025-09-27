@@ -7,7 +7,7 @@ import {
   ForeignKey,
   Model,
   PrimaryKey,
-  Table,
+  Table
 } from 'sequelize-typescript';
 import { User } from './user.model';
 
@@ -26,7 +26,7 @@ export class UserConnection extends Model<UserConnection, UserConnectionCreation
   @Column({
     type: DataType.UUID,
     field: 'requester_id',
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   requesterId!: string;
 
@@ -34,26 +34,26 @@ export class UserConnection extends Model<UserConnection, UserConnectionCreation
   @Column({
     type: DataType.UUID,
     field: 'addressee_id',
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   addresseeId!: string;
 
   @Column({
     type: DataType.BOOLEAN,
-    field: 'is_accept',
+    field: 'is_accept'
   })
   isAccept!: boolean;
 
   @CreatedAt
   @Column({
     type: DataType.DATE,
-    field: 'requested_at',
+    field: 'requested_at'
   })
   requestedAt!: Date;
 
   @Column({
     type: DataType.DATE,
-    field: 'accepted_at',
+    field: 'accepted_at'
   })
   acceptedAt!: Date;
 

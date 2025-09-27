@@ -9,7 +9,7 @@ import {
   Model,
   Table,
   Unique,
-  UpdatedAt,
+  UpdatedAt
 } from 'sequelize-typescript';
 import { MasterUserRole } from './master-user-role.model';
 import { MasterUserGender } from './master-user-gender.model';
@@ -26,7 +26,7 @@ export class User extends Model<User, UserCreation> {
   @Column({
     type: DataType.UUID,
     primaryKey: true,
-    defaultValue: DataType.UUIDV4,
+    defaultValue: DataType.UUIDV4
   })
   id!: string;
 
@@ -44,7 +44,7 @@ export class User extends Model<User, UserCreation> {
   @Column({
     field: 'user_role_id',
     type: DataType.UUID,
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   userRoleId!: string;
 
@@ -52,7 +52,7 @@ export class User extends Model<User, UserCreation> {
   @Column({
     field: 'user_gender_id',
     type: DataType.UUID,
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   })
   userGenderId!: string;
 
@@ -62,14 +62,14 @@ export class User extends Model<User, UserCreation> {
   @CreatedAt
   @Column({
     field: 'created_at',
-    type: DataType.DATE,
+    type: DataType.DATE
   })
   createdAt!: Date;
 
   @UpdatedAt
   @Column({
     field: 'updated_at',
-    type: DataType.DATE,
+    type: DataType.DATE
   })
   updatedAt!: Date;
 

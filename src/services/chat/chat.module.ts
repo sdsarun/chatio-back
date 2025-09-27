@@ -15,8 +15,8 @@ import { MessageRead } from '../../database/models/message-read.model';
     SequelizeModule.forFeature([Conversation, ConversationParticipant, Message, MessageRead]),
     AuthModule,
     UserModule,
-    MasterModule,
+    MasterModule
   ],
-  providers: [ChatService, ChatGateway],
+  providers: [ChatService, ChatGateway]
 })
 export class ChatModule {}

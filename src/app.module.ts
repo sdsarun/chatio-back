@@ -23,7 +23,7 @@ import { ChatModule } from './services/chat/chat.module';
     HttpModule.register({
       timeout: 5000,
       maxRedirects: 5,
-      global: true,
+      global: true
     }),
     ConfigurationModule,
     LoggerModule,
@@ -33,28 +33,28 @@ import { ChatModule } from './services/chat/chat.module';
     MasterModule,
     UserModule,
     AuthModule,
-    ChatModule,
+    ChatModule
   ],
   controllers: [AppController],
   providers: [
     AppService,
     {
       provide: APP_INTERCEPTOR,
-      useClass: LoggerInterceptor,
+      useClass: LoggerInterceptor
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: FormatResponseInterceptor,
+      useClass: FormatResponseInterceptor
     },
     {
       provide: APP_FILTER,
-      useClass: AllExceptionsFilter,
+      useClass: AllExceptionsFilter
     },
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+      useClass: AuthGuard
+    }
+  ]
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

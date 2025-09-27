@@ -7,7 +7,7 @@ import { SkipFormatResponseInterceptorPropertyName } from '../decorators/skip-fo
 export class FormatResponseInterceptor implements NestInterceptor {
   intercept(
     context: ExecutionContext,
-    next: CallHandler<any>,
+    next: CallHandler<any>
   ): Observable<any> | Promise<Observable<any>> {
     const isSkip = context.getHandler()[SkipFormatResponseInterceptorPropertyName];
     if (isSkip) {
@@ -39,10 +39,10 @@ export class FormatResponseInterceptor implements NestInterceptor {
           success: true,
           statusCode: response.statusCode,
           message,
-          data: controllerResult,
+          data: controllerResult
         };
         return formattedResponseObject;
-      }),
+      })
     );
   }
 

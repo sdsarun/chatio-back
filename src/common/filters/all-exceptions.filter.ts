@@ -5,7 +5,7 @@ import { Socket } from 'socket.io';
 import {
   getExceptionHttpStatus,
   getExceptionMessage,
-  parseException,
+  parseException
 } from '../../shared/utils/exception.utils';
 
 @Catch()
@@ -55,8 +55,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
         name: exception?.name,
         timestamp: new Date().toISOString(),
         requestPath: `${httpAdapter.getRequestMethod(request)} - ${httpAdapter.getRequestUrl(request)}`,
-        requestId: requestId,
-      },
+        requestId: requestId
+      }
     };
 
     httpAdapter.reply(response, responseBody, httpStatus);
@@ -74,8 +74,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
       message: message,
       error: {
         name,
-        timestamp: new Date().toISOString(),
-      },
+        timestamp: new Date().toISOString()
+      }
     };
 
     client.emit('exception', responseBody);

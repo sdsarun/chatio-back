@@ -6,7 +6,7 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique,
+  Unique
 } from 'sequelize-typescript';
 
 export type MasterConversationTypeCreation = Partial<Pick<MasterConversationType, 'id' | 'name'>>;
@@ -14,7 +14,7 @@ export type MasterConversationTypeCreation = Partial<Pick<MasterConversationType
 @Table({
   tableName: 'master_conversation_types',
   timestamps: false,
-  paranoid: false,
+  paranoid: false
 })
 export class MasterConversationType extends Model<
   MasterConversationType,

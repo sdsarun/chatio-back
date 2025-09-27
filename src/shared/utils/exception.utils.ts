@@ -65,6 +65,6 @@ export function parseException(exception: any): {
   return {
     httpStatus: getExceptionHttpStatus(exception),
     message: getExceptionMessage(exception),
-    name: getExceptionName(exception),
+    name: getExceptionName(exception)
   };
 }
