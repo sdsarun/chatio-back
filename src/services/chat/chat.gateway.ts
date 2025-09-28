@@ -16,10 +16,11 @@ import { ChatEvent } from './constants/chat-events.constant';
 import { LeftConversationDTO } from './dto/left-conversation.dto';
 import { GetMessagesDTO } from './dto/get-messages.dto';
 import { SendMessageDTO } from './dto/send-message.dto';
-import { UserEvents } from './constants/user-events.constant';
+import { UserEvent } from './constants/user-events.constant';
 import { UpdateUserConnectionStatusDTO } from './dto/update-user-connection-status.dto';
 import { GetUserStatusByUserIdDTO } from './dto/get-user-status-by-user-id.dto';
 import { wsResponse } from '../../shared/utils/ws-response.utils';
+import { GetConversationStatusDTO } from './dto/get-converstaion-status.dto';
 
 @UseFilters(AllExceptionsFilter)
 @WebSocketGateway()
@@ -46,7 +47,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     const userConnections = (await this.chatService.getUserConnections()) || {};
     for (const { userId, connectionStatus } of Object.values(userConnections)) {
-      this.server.emit(UserEvents.GetUserStatusByUserId, { userId, connectionStatus });
+      this.server.emit(UserEvent.GetUserStatusByUserId, { userId, connectionStatus });
     }
   }
 
@@ -64,7 +65,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           .emit(ChatEvent.MatchedStranger, toMatchingStrangerResult);
       }
     } else {
-      return toMatchingStrangerResult;
+      return wsResponse({ data: toMatchingStrangerResult });
     }
   }
 
@@ -77,6 +78,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const { userId } = record;
       this.server.to(userConnections[userId].clientId).emit(ChatEvent.SkipStranger, record);
     }
+    console.log(
+      '[LOG] - chat.gateway.ts:76 - ChatGateway - handleSkipStranger - leftConversationResult:',
+      leftConversationResult
+    );
   }
 
   @SubscribeMessage(ChatEvent.GetMessages)
@@ -133,18 +138,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @SubscribeMessage(UserEvents.GetUserStatusByUserId)
+  @SubscribeMessage(ChatEvent.GetConversationStatus)
+  async handleGetConverstaionStatus(@MessageBody() message: GetConversationStatusDTO) {
+    // this.chatService.
+  }
+
+  @SubscribeMessage(UserEvent.GetUserStatusByUserId)
   async handleGetUserStatusByUserId(@MessageBody() message: GetUserStatusByUserIdDTO) {
     const userConnections = (await this.chatService.getUserConnections()) || {};
     return wsResponse({ data: userConnections?.[message.userId] });
   }
 
-  @SubscribeMessage(UserEvents.UpdateUserConnectionStatus)
+  @SubscribeMessage(UserEvent.UpdateUserConnectionStatus)
   async handleUpdateUserConnectionStatus(@MessageBody() message: UpdateUserConnectionStatusDTO) {
     const updatedStatus = await this.chatService.updateUserConnectionStatus(message);
     const userConnections = (await this.chatService.getUserConnections()) || {};
     for (const { userId, connectionStatus } of Object.values(userConnections)) {
-      this.server.emit(UserEvents.GetUserStatusByUserId, { userId, connectionStatus });
+      this.server.emit(UserEvent.GetUserStatusByUserId, { userId, connectionStatus });
     }
     return wsResponse({ data: updatedStatus });
   }
