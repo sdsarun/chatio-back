@@ -36,6 +36,7 @@ import { MessageRead } from '../../database/models/message-read.model';
 import { UserConnectionStatus } from './constants/user-connection-status.constant';
 import { UpdateUserConnectionStatusDTO } from './dto/update-user-connection-status.dto';
 import { IsConversationExistsDTO } from './dto/is-conversation-exists.dto';
+import { findConversationParticipantByConversationIdDTO } from './dto/find-converstaion-participant-by-conversation-id.dto';
 
 @Injectable()
 export class ChatService {
@@ -423,5 +424,19 @@ export class ChatService {
     return converstaion ? true : false;
   }
 
-  // async[]
+  async findConversationParticipantByConversationId(
+    payload: findConversationParticipantByConversationIdDTO,
+    options?: TransactionalServiceActionOptions
+  ) {
+    return this.conversationParticipant.findAll({
+      where: { conversationId: payload.conversationId },
+      raw: true,
+      include: {
+        all: true,
+        nested: true
+      },
+      nest: true,
+      transaction: options?.transaction
+    });
+  }
 }
